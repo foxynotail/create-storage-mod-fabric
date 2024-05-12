@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "fxntstorage:item/back_pack_magnet_upgrade_deactivated"
+  }
+}

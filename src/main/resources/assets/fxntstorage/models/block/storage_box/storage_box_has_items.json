@@ -1,0 +1,6 @@
+{
+  "parent": "fxntstorage:block/storage_box/storage_box_light",
+  "textures": {
+    "light": "fxntstorage:block/storage_box/green_light"
+  }
+}

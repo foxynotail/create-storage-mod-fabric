@@ -1,0 +1,67 @@
+{
+  "itemGroup.fxntstorage.main": "FXNT Storage",
+  "itemGroup.fxntstorage.create": "FXNT Storage Create",
+
+  "key.categories.fxntstorage": "FXNT Storage",
+  "key.fxntstorage.open_backpack": "Open Backpack",
+  "key.fxntstorage.clear_backpack_shape_cache": "Clear Backpack Shape Cache",
+  "key.fxntstorage.backpack_hover": "Toggle Backpack Flight Hover Mode",
+
+  "block.fxntstorage.storage_box": "Industrial Iron Storage Box",
+  "container.fxntstorage.industrial_iron_storage_box": "Industrial Iron Storage Box",
+
+  "block.fxntstorage.andesite_storage_box": "Andesite Storage Box",
+  "container.fxntstorage.andesite_storage_box": "Andesite Storage Box",
+
+  "block.fxntstorage.copper_storage_box": "Copper Storage Box",
+  "container.fxntstorage.copper_storage_box": "Copper Storage Box",
+
+  "block.fxntstorage.brass_storage_box": "Brass Storage Box",
+  "container.fxntstorage.brass_storage_box": "Brass Storage Box",
+
+  "block.fxntstorage.hardened_storage_box": "Hardened Storage Box",
+  "container.fxntstorage.hardened_storage_box": "Hardened Storage Box",
+
+  "block.fxntstorage.back_pack": "Industrial Iron Backpack",
+  "container.fxntstorage.back_pack": "Industrial Iron Backpack",
+  "item.fxntstorage.back_pack": "Industrial Iron Backpack",
+
+  "block.fxntstorage.andesite_back_pack": "Andesite Backpack",
+  "container.fxntstorage.andesite_back_pack": "Andesite Backpack",
+  "item.fxntstorage.andesite_back_pack": "Andesite Backpack",
+
+  "block.fxntstorage.copper_back_pack": "Copper Backpack",
+  "container.fxntstorage.copper_back_pack": "Copper Backpack",
+  "item.fxntstorage.copper_back_pack": "Copper Backpack",
+
+  "block.fxntstorage.brass_back_pack": "Brass Backpack",
+  "container.fxntstorage.brass_back_pack": "Brass Backpack",
+  "item.fxntstorage.brass_back_pack": "Brass Backpack",
+
+  "block.fxntstorage.hardened_back_pack": "Hardened Backpack",
+  "container.fxntstorage.hardened_back_pack": "Hardened Backpack",
+  "item.fxntstorage.hardened_back_pack": "Hardened Backpack",
+
+  "item.fxntstorage.back_pack_blank_upgrade": "Backpack Upgrade Template",
+  "item.fxntstorage.back_pack_magnet_upgrade": "Backpack Magnet Upgrade",
+  "item.fxntstorage.back_pack_magnet_upgrade_deactivated": "Backpack Magnet Upgrade [Deactivated]",
+  "item.fxntstorage.back_pack_pickblock_upgrade": "Backpack Pick Block Upgrade",
+  "item.fxntstorage.back_pack_pickblock_upgrade_deactivated": "Backpack Pick Block Upgrade [Deactivated]",
+  "item.fxntstorage.back_pack_itempickup_upgrade": "Backpack Item Pickup Upgrade",
+  "item.fxntstorage.back_pack_itempickup_upgrade_deactivated": "Backpack Item Pickup Upgrade [Deactivated]",
+  "item.fxntstorage.back_pack_flight_upgrade": "Backpack Flight Upgrade",
+  "item.fxntstorage.back_pack_flight_upgrade_deactivated": "Backpack Flight Upgrade [Deactivated]",
+  "item.fxntstorage.back_pack_refill_upgrade": "Backpack Refill Upgrade",
+  "item.fxntstorage.back_pack_refill_upgrade_deactivated": "Backpack Refill Upgrade [Deactivated]",
+  "item.fxntstorage.back_pack_feeder_upgrade": "Backpack Feeder Upgrade",
+  "item.fxntstorage.back_pack_feeder_upgrade_deactivated": "Backpack Feeder Upgrade [Deactivated]",
+  "item.fxntstorage.back_pack_toolswap_upgrade": "Backpack Tool Swap Upgrade",
+  "item.fxntstorage.back_pack_toolswap_upgrade_deactivated": "Backpack Tool Swap Upgrade [Deactivated]",
+  "item.fxntstorage.back_pack_falldamage_upgrade": "Backpack Fall Damage Upgrade",
+  "item.fxntstorage.back_pack_falldamage_upgrade_deactivated": "Backpack Fall Damage Upgrade [Deactivated]",
+
+
+  "fxntstorage.tooltip.holdForControls": "Hold [CTRL] for Controls",
+  "fxntstorage.tooltip.holdForDescription": "Hold [Shift] for Summary"
+
+}

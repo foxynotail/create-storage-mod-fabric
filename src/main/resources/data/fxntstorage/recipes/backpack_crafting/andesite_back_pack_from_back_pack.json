@@ -1,0 +1,22 @@
+{
+  "type": "fxntstorage:backpack_crafting",
+  "category": "misc",
+  "group": "back_pack",
+  "key": {
+    "B": {
+      "item": "fxntstorage:back_pack"
+    },
+    "C": {
+      "item": "create:andesite_casing"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CBC",
+    "CCC"
+  ],
+  "result": {
+    "item": "fxntstorage:andesite_back_pack"
+  },
+  "show_notification": true
+}

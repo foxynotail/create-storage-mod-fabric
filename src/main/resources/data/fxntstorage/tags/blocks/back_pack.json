@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "fxntstorage:back_pack",
+    "fxntstorage:andesite_back_pack",
+    "fxntstorage:copper_back_pack",
+    "fxntstorage:brass_back_pack",
+    "fxntstorage:hardened_back_pack"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "fxntstorage:block/storage_box/storage_box_base",
+  "textures": {
+    "casing": "create:block/copper_casing",
+    "particle": "create:block/copper_casing"
+  }
+}

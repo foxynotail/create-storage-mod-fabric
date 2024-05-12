@@ -1,0 +1,7 @@
+{
+	"parent": "fxntstorage:block/back_pack",
+	"textures": {
+		"0": "fxntstorage:block/brass_back_pack",
+		"particle": "fxntstorage:block/brass_back_pack"
+	}
+}

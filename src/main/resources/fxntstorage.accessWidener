@@ -1,0 +1,22 @@
+accessWidener v1 named
+mutable field net/minecraft/world/inventory/Slot y I
+mutable field net/minecraft/world/inventory/Slot x I
+accessible field net/minecraft/world/inventory/AbstractContainerMenu remoteSlots Lnet/minecraft/core/NonNullList;
+accessible field net/minecraft/world/inventory/AbstractContainerMenu remoteCarried Lnet/minecraft/world/item/ItemStack;
+accessible field net/minecraft/world/inventory/AbstractContainerMenu lastSlots Lnet/minecraft/core/NonNullList;
+accessible method net/minecraft/world/inventory/AbstractContainerMenu synchronizeCarriedToRemote ()V
+accessible method net/minecraft/world/inventory/AbstractContainerMenu synchronizeSlotToRemote (ILnet/minecraft/world/item/ItemStack;Ljava/util/function/Supplier;)V
+accessible field net/minecraft/world/inventory/AbstractContainerMenu suppressRemoteUpdates Z
+accessible method net/minecraft/world/inventory/AbstractContainerMenu doClick (IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V
+accessible field net/minecraft/world/inventory/AbstractContainerMenu quickcraftType I
+accessible field net/minecraft/world/inventory/AbstractContainerMenu quickcraftStatus I
+accessible field net/minecraft/world/inventory/AbstractContainerMenu quickcraftSlots Ljava/util/Set;
+accessible field net/minecraft/client/multiplayer/MultiPlayerGameMode connection Lnet/minecraft/client/multiplayer/ClientPacketListener;
+accessible field net/minecraft/world/item/Item BASE_ATTACK_DAMAGE_UUID Ljava/util/UUID;
+accessible method net/minecraft/world/inventory/AbstractContainerMenu createCarriedSlotAccess ()Lnet/minecraft/world/entity/SlotAccess;
+accessible method net/minecraft/client/gui/screens/inventory/AbstractContainerScreen renderSlot (Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/world/inventory/Slot;)V
+accessible method net/minecraft/client/gui/GuiGraphics <init> (Lnet/minecraft/client/Minecraft;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource$BufferSource;)V
+extendable class net/minecraft/world/item/ItemStack
+accessible method net/minecraft/world/inventory/AbstractContainerMenu triggerSlotListeners (ILnet/minecraft/world/item/ItemStack;Ljava/util/function/Supplier;)V
+accessible field net/minecraft/world/inventory/AbstractContainerMenu synchronizer Lnet/minecraft/world/inventory/ContainerSynchronizer;
+accessible field net/minecraft/world/inventory/AbstractContainerMenu containerListeners Ljava/util/List;

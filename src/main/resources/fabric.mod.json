@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "fxntstorage",
+  "version": "${version}",
+  "name": "Create: Storage",
+  "description": "A Storage System for Create by FoxyNoTail",
+  "authors": [
+    "FoxyNoTail"
+  ],
+  "license": "All-Rights-Reserved",
+  "icon": "assets/fxntstorage/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.fxnt.fxntstorage.FXNTStorageClient"
+    ],
+    "main": [
+      "net.fxnt.fxntstorage.FXNTStorage"
+    ],
+    "emi": [
+      "net.fxnt.fxntstorage.compat.EmiCompat"
+    ],
+    "jei_mod_plugin": [
+      "net.fxnt.fxntstorage.compat.JEICompat"
+    ],
+    "rei_client": [
+      "net.fxnt.fxntstorage.compat.REICompat"
+    ]
+  },
+  "mixins": [
+    "fxntstorage.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "minecraft": "${minecraft_version}",
+    "java": ">=17",
+    "fabric-api": "*",
+    "create": "${create_version}"
+  },
+  "accessWidener" : "fxntstorage.accessWidener"
+}

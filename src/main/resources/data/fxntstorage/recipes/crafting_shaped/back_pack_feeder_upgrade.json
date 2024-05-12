@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "back_pack",
+  "key": {
+    "B": {
+      "item": "fxntstorage:back_pack_blank_upgrade"
+    },
+    "R": {
+      "item": "create:redstone_link"
+    },
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "X": {
+      "item": "create:honeyed_apple"
+    },
+    "Y": {
+      "item": "create:chocolate_glazed_berries"
+    },
+    "Z": {
+      "item": "create:sweet_roll"
+    }
+  },
+  "pattern": [
+    " R ",
+    "IBI",
+    "XYZ"
+  ],
+  "result": {
+    "item": "fxntstorage:back_pack_feeder_upgrade"
+  },
+  "show_notification": true
+}

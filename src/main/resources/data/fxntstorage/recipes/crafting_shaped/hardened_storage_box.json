@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "storage_box",
+  "key": {
+    "C": {
+      "item": "create:railway_casing"
+    },
+    "V": {
+      "item": "create:item_vault"
+    },
+    "D": {
+      "item": "create:display_board"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "CVC",
+    "CDC"
+  ],
+  "result": {
+    "item": "fxntstorage:hardened_storage_box"
+  },
+  "show_notification": true
+}

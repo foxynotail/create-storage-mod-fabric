@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "back_pack",
+  "key": {
+    "B": {
+      "item": "fxntstorage:back_pack_blank_upgrade"
+    },
+    "R": {
+      "item": "create:redstone_link"
+    },
+    "I": {
+      "item": "create:iron_sheet"
+    },
+    "X": {
+      "item": "create:brass_hand"
+    }
+  },
+  "pattern": [
+    " R ",
+    "IBI",
+    " X "
+  ],
+  "result": {
+    "item": "fxntstorage:back_pack_refill_upgrade"
+  },
+  "show_notification": true
+}

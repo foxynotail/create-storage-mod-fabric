@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "net.fxnt.fxntstorage.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ItemEntityMixin",
+    "LivingEntityMixin",
+    "PickBlockMixin",
+    "PlayerInventoryMixin",
+    "ServerPlayerTickMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "GuiGraphicsMixin",
+    "LocalPlayerTickMixin"
+  ]
+}
