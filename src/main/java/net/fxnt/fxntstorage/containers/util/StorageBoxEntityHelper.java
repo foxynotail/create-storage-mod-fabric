@@ -39,6 +39,7 @@ public class StorageBoxEntityHelper<T extends StorageBoxEntity> {
         instance.slotCount = tag.getInt("slotCount");
         instance.storedAmount = tag.getInt("storedAmount");
         instance.percentageUsed = tag.getInt("percentageUsed");
+        instance.voidUpgrade = tag.getBoolean("voidUpgrade");
     }
 
     public void write(CompoundTag tag) {
@@ -47,6 +48,7 @@ public class StorageBoxEntityHelper<T extends StorageBoxEntity> {
         tag.putInt("slotCount", instance.slotCount);
         tag.putInt("storedAmount", instance.calculateStoredAmount());
         tag.putInt("percentageUsed", instance.calculatePercentageUsed());
+        tag.putBoolean("voidUpgrade", instance.voidUpgrade);
     }
     public void writeScreenOpeningData(FriendlyByteBuf buf) {
         buf.writeBlockPos(instance.pos);
@@ -82,18 +84,22 @@ public class StorageBoxEntityHelper<T extends StorageBoxEntity> {
     }
 
     public <T extends BlockEntity> void serverTick(Level level, BlockPos blockPos, BlockEntity blockEntity) {
-        if (!level.isClientSide && level != null) {
+        if (level != null && !level.isClientSide) {
             instance.lastTick++;
+            if (instance.voidUpgrade) {
+                // If voidupgrade = true, then void off everything in last slot every tick
+                instance.items.set(instance.slotCount - 1, ItemStack.EMPTY);
+            }
+
             if (instance.lastTick >= instance.updateEveryXTicks) {
                 instance.lastTick = 0;
                 instance.doTick = true;
             }
             if (!instance.doTick) return;
 
+            BlockState currentState  = instance.getBlockState();
             instance.storedAmount = calculateStoredAmount();
             level.sendBlockUpdated(instance.getBlockPos(), instance.getBlockState(), instance.getBlockState(), Block.UPDATE_ALL);
-
-            BlockState currentState  = level.getBlockState(blockPos);
             Container container = ((Container)blockEntity);
 
             int totalSlots = container.getContainerSize();

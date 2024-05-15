@@ -1,7 +1,6 @@
 package net.fxnt.fxntstorage.containers;
 
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fxnt.fxntstorage.containers.util.ContainerActions;
 import net.fxnt.fxntstorage.containers.util.EnumProperties;
 import net.fxnt.fxntstorage.init.ModBlocks;
@@ -31,6 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
@@ -43,15 +43,17 @@ import java.util.List;
 public class StorageBox extends BaseEntityBlock implements EntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty STORAGE_USED = EnumProperty.create("storage_used", EnumProperties.StorageUsed.class);
+    public static final BooleanProperty VOID_UPGRADE = BooleanProperty.create("void_upgrade");
     private final String title;
     private final int slotCount;
     private static long lastInteractionTime = 0;
     private static final long INTERACTION_COOLDOWN = 200; // cooldown in milliseconds
 
     public StorageBox(FabricBlockSettings properties, int slotCount, String title) {
-        super(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK));
+        super(properties.copyOf(Blocks.IRON_BLOCK));
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
         this.registerDefaultState(this.defaultBlockState().setValue(STORAGE_USED, EnumProperties.StorageUsed.EMPTY));
+        this.registerDefaultState(this.defaultBlockState().setValue(VOID_UPGRADE, false));
         this.slotCount = slotCount;
         this.title = "container.fxntstorage." + title;
     }
@@ -60,7 +62,7 @@ public class StorageBox extends BaseEntityBlock implements EntityBlock {
     @Nullable
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         StorageBoxEntity blockEntity = new StorageBoxEntity(pos, state);
-        blockEntity.setData(title, slotCount);
+        blockEntity.initializeEntity(title, slotCount);
         return blockEntity;
     }
 
@@ -120,13 +122,17 @@ public class StorageBox extends BaseEntityBlock implements EntityBlock {
 
             if (player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                 BlockEntity blockEntity = level.getBlockEntity(blockPos);
-                if (blockEntity instanceof StorageBoxEntity) {
-                    ExtendedScreenHandlerFactory screenHandlerFactory = ((StorageBoxEntity) level.getBlockEntity(blockPos));
-                    if (screenHandlerFactory != null) {
-                        player.openMenu(screenHandlerFactory);
+                if (blockEntity instanceof StorageBoxEntity storageBoxEntity) {
+                    if (!player.isShiftKeyDown()) {
+                        // If interact with empty hand while standing then open menu
+                        player.openMenu(storageBoxEntity);
+                        return InteractionResult.CONSUME;
+                    } else {
+                        // If interact with empty hand while crouching then toggle void upgrade
+                        storageBoxEntity.toggleVoidUpgrade();
+                        return InteractionResult.SUCCESS;
                     }
                 }
-                return InteractionResult.CONSUME;
             }
             return ContainerActions.transferItemsToContainer(level, blockPos, player, hit, FACING);
         }
@@ -176,7 +182,7 @@ public class StorageBox extends BaseEntityBlock implements EntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(FACING, STORAGE_USED);
+        pBuilder.add(FACING, STORAGE_USED, VOID_UPGRADE);
     }
 
     @Override
@@ -222,5 +228,8 @@ public class StorageBox extends BaseEntityBlock implements EntityBlock {
 
     protected Direction getFacing(BlockState state) {
         return state.getValue(FACING);
+    }
+    public boolean getVoidUpgradeStatus(BlockState state) {
+        return state.getValue(VOID_UPGRADE);
     }
 }

@@ -41,10 +41,16 @@ public class StorageBoxEntityRenderer extends SmartBlockEntityRenderer<StorageBo
         if (level == null) return;
 
         int amount = blockEntity.getStoredAmount();
-        int percentUsed = blockEntity.getPercentageUsed();
 
-        String amountText = Util.formatNumber(amount);
-        String percentText = percentUsed + "% Used";
+        String line1 = Util.formatNumber(amount);
+        String line2;
+
+        if (blockEntity.voidUpgrade) {
+            line2 = "Void Mode";
+        } else {
+            int percentUsed = blockEntity.getPercentageUsed();
+            line2 = percentUsed + "% Used";
+        }
 
         //int color = Util.interpolateColor(0, 15, maxBright);
         float distance = (float)Math.sqrt(blockEntity.getBlockPos().distToCenterSqr(player.position()));
@@ -55,8 +61,8 @@ public class StorageBoxEntityRenderer extends SmartBlockEntityRenderer<StorageBo
         float Line1Offset = 7f;
         float Line2Offset = 4f;
 
-        renderLine(amountText, Line1Offset, blockEntity, partialTick, poseStack, buffer, packedLight, alpha);
-        renderLine(percentText, Line2Offset, blockEntity, partialTick, poseStack, buffer, packedLight, alpha);
+        renderLine(line1, Line1Offset, blockEntity, partialTick, poseStack, buffer, packedLight, alpha);
+        renderLine(line2, Line2Offset, blockEntity, partialTick, poseStack, buffer, packedLight, alpha);
 
     }
 

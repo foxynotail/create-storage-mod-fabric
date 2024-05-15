@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.inventory.InvManipul
 import com.simibubi.create.foundation.blockEntity.behaviour.inventory.VersionedInventoryTrackerBehaviour;
 import com.simibubi.create.foundation.utility.BlockFace;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.config.Config;
 import net.fxnt.fxntstorage.containers.util.ContainerSaveContents;
 import net.fxnt.fxntstorage.containers.util.StorageBoxEntityHelper;
@@ -37,16 +38,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static net.fxnt.fxntstorage.containers.StorageBox.VOID_UPGRADE;
+
 public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContainer, ContainerSaveContents, ExtendedScreenHandlerFactory {
 
     public String title = "Default Storage Box";
     public int slotCount = 999; // Needs to be higher than will be set by any storage box
     public int[] SLOTS_FOR_ALL_DIRECTIONS = new int[slotCount];
-    public NonNullList<ItemStack> items;
-    protected final ContainerData containerData;
+    public NonNullList<ItemStack> items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
+    protected ContainerData containerData;
     public BlockPos pos;
     public int storedAmount = -1;
     public int percentageUsed = 0;
+    public boolean voidUpgrade = false;
     public int lastTick = 0;
     public boolean doTick = false;
     public int updateEveryXTicks = Config.STORAGE_BOX_UPDATE_TIME.get();
@@ -58,9 +62,10 @@ public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContain
 
     public StorageBoxEntity(BlockPos pos, BlockState blockState) {
         super(ModBlocks.STORAGE_BOX_ENTITY, pos, blockState);
-        this.items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
-        initializeSlotsForAllDirections();
         this.pos = pos;
+        this.helper = new StorageBoxEntityHelper<>(this);
+        this.voidUpgrade = blockState.getValue(VOID_UPGRADE);
+        initializeSlotsForAllDirections();
         this.containerData = new ContainerData() {
             @Override
             public int get(int index) {
@@ -73,7 +78,13 @@ public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContain
                 return slotCount;
             }
         };
-        this.helper = new StorageBoxEntityHelper<>(this);
+    }
+
+    public void initializeEntity(String title, int slotCount) {
+        this.title = title;
+        this.slotCount = slotCount;
+        this.items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
+        initializeSlotsForAllDirections();
     }
 
     public void saveItems(CompoundTag nbt) {
@@ -82,10 +93,6 @@ public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContain
     }
 
     public void onLoad() { helper.onLoad();}
-    public void setData(String title, int slotCount) {
-        this.title = title;
-        this.slotCount = slotCount;
-    }
 
     @Override
     protected void read(CompoundTag tag, boolean clientPacket) {
@@ -209,4 +216,16 @@ public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContain
         return FilterItemStack.of(filterItem).test(level, stack);
     }
 
+    public void toggleVoidUpgrade() {
+        BlockState blockState = this.getBlockState();
+        Level level = this.getLevel();
+        if (level != null) {
+            if (blockState.getValue(VOID_UPGRADE)) {
+                this.voidUpgrade = false;
+            } else {
+                this.voidUpgrade = true;
+            }
+            level.setBlockAndUpdate(this.getBlockPos(), blockState.setValue(VOID_UPGRADE, this.voidUpgrade));
+        }
+    }
 }
