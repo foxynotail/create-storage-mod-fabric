@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "passer_block",
+  "key": {
+    "X": {
+      "item": "create:chute"
+    },
+    "Y": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "pattern": [
+    " X ",
+    " Y ",
+    " X "
+  ],
+  "result": {
+    "item": "fxntstorage:passer_block"
+  },
+  "show_notification": true
+}
