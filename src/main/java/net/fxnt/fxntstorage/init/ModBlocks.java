@@ -9,6 +9,9 @@ import net.fxnt.fxntstorage.backpacks.main.BackPackEntity;
 import net.fxnt.fxntstorage.backpacks.main.BackPackItem;
 import net.fxnt.fxntstorage.containers.StorageBox;
 import net.fxnt.fxntstorage.containers.StorageBoxEntity;
+import net.fxnt.fxntstorage.passer.PasserBlock;
+import net.fxnt.fxntstorage.passer.PasserEntity;
+import net.fxnt.fxntstorage.passer.PasserSmartEntity;
 import net.fxnt.fxntstorage.util.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -44,6 +47,11 @@ public class ModBlocks {
     public static final Block HARDENED_BACK_PACK = registerBlock("hardened_back_pack",
                 new BackPackBlock(FabricBlockSettings.create(), "hardened_back_pack", Util.HARDENED_BACKPACK_STACK_SIZE), false);
 
+    public static final Block PASSER_BLOCK = registerBlock("passer_block",
+            new PasserBlock(FabricBlockSettings.create(), false), true);
+    public static final Block SMART_PASSER_BLOCK = registerBlock("smart_passer_block",
+            new PasserBlock(FabricBlockSettings.create(), true), true);
+
     // ITEMS
     public static final Item BACK_PACK_ITEM = registerBlockItem("back_pack",
             new BackPackItem(BACK_PACK, new FabricItemSettings()));
@@ -65,6 +73,10 @@ public class ModBlocks {
             registerBlockEntity("storage_box_entity", BlockEntityType.Builder.of(StorageBoxEntity::new, STORAGE_BOX, ANDESITE_STORAGE_BOX, COPPER_STORAGE_BOX, BRASS_STORAGE_BOX, HARDENED_STORAGE_BOX));
     public static final BlockEntityType<BackPackEntity> BACK_PACK_ENTITY =
             registerBlockEntity("back_pack_entity", BlockEntityType.Builder.of(BackPackEntity::new, BACK_PACK, ANDESITE_BACK_PACK, COPPER_BACK_PACK, BRASS_BACK_PACK, HARDENED_BACK_PACK));
+    public static final BlockEntityType<PasserEntity> PASSER_ENTITY =
+            registerBlockEntity("passer_entity", BlockEntityType.Builder.of(PasserEntity::new, PASSER_BLOCK));
+    public static final BlockEntityType<PasserSmartEntity> SMART_PASSER_ENTITY =
+            registerBlockEntity("smart_passer_entity", BlockEntityType.Builder.of(PasserSmartEntity::new, SMART_PASSER_BLOCK));
 
     private static Block registerBlock(String name, Block block, boolean autoRegisterItem) {
         if (autoRegisterItem) autoRegisterBlockItem(name, block);

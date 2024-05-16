@@ -10,6 +10,8 @@
     "fxntstorage:andesite_back_pack",
     "fxntstorage:copper_back_pack",
     "fxntstorage:brass_back_pack",
-    "fxntstorage:hardened_back_pack"
+    "fxntstorage:hardened_back_pack",
+    "fxntstorage:passer_block",
+    "fxntstorage:smart_passer_block"
   ]
 }

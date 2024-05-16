@@ -3,8 +3,8 @@ package net.fxnt.fxntstorage.backpacks.util;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fxnt.fxntstorage.backpacks.upgrades.JetpackController;
 import net.fxnt.fxntstorage.cache.BackPackShapeCache;
+import net.fxnt.fxntstorage.cache.PasserShapeCache;
 import net.fxnt.fxntstorage.init.ModKeyBinds;
-import net.fxnt.fxntstorage.network.BackPackPackets;
 import net.fxnt.fxntstorage.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +24,8 @@ public class BackPackKeyBinds {
             if (ModKeyBinds.CLEAR_BACKPACK_SHAPE_CACHE.consumeClick() && client.player != null) {
                 Player player = client.player;
                 BackPackShapeCache.clearCache();
-                player.sendSystemMessage(Component.literal("BackPack Shape Cache Cleared"));
+                PasserShapeCache.clearCache();
+                player.sendSystemMessage(Component.literal("Create: Storage Shape Cache Cleared"));
             }
 
             // BackPack Toggle Hover

@@ -22,6 +22,9 @@
   "block.fxntstorage.hardened_storage_box": "Hardened Storage Box",
   "container.fxntstorage.hardened_storage_box": "Hardened Storage Box",
 
+  "block.fxntstorage.passer_block": "Passer",
+  "block.fxntstorage.smart_passer_block": "Smart Passer",
+
   "block.fxntstorage.back_pack": "Industrial Iron Backpack",
   "container.fxntstorage.back_pack": "Industrial Iron Backpack",
   "item.fxntstorage.back_pack": "Industrial Iron Backpack",

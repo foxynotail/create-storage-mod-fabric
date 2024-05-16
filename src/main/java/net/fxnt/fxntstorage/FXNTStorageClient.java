@@ -3,7 +3,6 @@ package net.fxnt.fxntstorage;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fxnt.fxntstorage.backpacks.main.BackPackScreen;
@@ -15,8 +14,8 @@ import net.fxnt.fxntstorage.init.ModBlocks;
 import net.fxnt.fxntstorage.init.ModKeyBinds;
 import net.fxnt.fxntstorage.init.ModMenuTypes;
 import net.fxnt.fxntstorage.network.BackPackClientPackets;
+import net.fxnt.fxntstorage.passer.PasserEntityRenderer;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 
@@ -24,8 +23,6 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 public class FXNTStorageClient implements ClientModInitializer {
 
     public void onInitializeClient() {
-
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(), ModBlocks.BACK_PACK, ModBlocks.ANDESITE_BACK_PACK);
 
         // Register Key Bindings
         ModKeyBinds.register();
@@ -39,6 +36,7 @@ public class FXNTStorageClient implements ClientModInitializer {
 
         // Render Text on Storage Boxes
         BlockEntityRendererRegistry.register(ModBlocks.STORAGE_BOX_ENTITY, StorageBoxEntityRenderer::new);
+        BlockEntityRendererRegistry.register(ModBlocks.SMART_PASSER_ENTITY, PasserEntityRenderer::new);
 
         // Render BackPack on Player
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {

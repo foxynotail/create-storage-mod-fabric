@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -148,22 +149,49 @@ public class StorageBoxEntityHelper<T extends StorageBoxEntity> {
         if (!instance.filterTest(level, itemStack)) return false;
         return instance.SLOTS_FOR_ALL_DIRECTIONS.length >= 1;
     }
-    public boolean transferItems(Level level, ItemStack itemStack, int itemSlot, Player player, boolean toPlayer) {
-        if (!instance.filterTest(level, itemStack)) return false;
-        // Passed test so crack on!
-        int containerRows = instance.getContainerSize()/9;
-        Container container = instance;
+    public boolean transferItems(Level level, Container container, int itemSlot, Player player, boolean toPlayer) {
         Inventory inventory = player.getInventory();
 
-        // How to receive 1 item when shift clicking
-        boolean isSneaking = player.isShiftKeyDown();
-        // ^ TODO
+        ItemStack itemStack = ItemStack.EMPTY;
+        // Receive 1 item when shift clicking
+        int amount = 64;
+        if (player.isShiftKeyDown()) amount = 1;
 
-        itemStack = TransferItems.quickMoveStack(toPlayer, itemStack, itemSlot, containerRows, container, inventory);
+        if (toPlayer) {
+            itemStack = TransferItems.transferItems(container, itemSlot, inventory, amount, toPlayer);
+        } else {
+            itemStack = TransferItems.transferItems(inventory, itemSlot, container, amount, toPlayer);
+        }
         if (!itemStack.isEmpty() && toPlayer) dropItems(level, itemStack);
+
+        if (itemStack.isEmpty()) return true;
 
         return false;
     }
+
+
+    public boolean transferItemsToPlayer(Level level, Container container, Player player) {
+        ItemStack playerStack = player.getItemInHand(InteractionHand.MAIN_HAND);
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            ItemStack srcStack = container.getItem(i);
+            if (srcStack.isEmpty()) continue;
+            if (!playerStack.isEmpty() && !ItemStack.isSameItemSameTags(srcStack, playerStack)) continue;
+            if (!TransferItems.canTakeItemFromContainer(player.getInventory(), container, srcStack, i)) continue;
+            if (!instance.filterTest(level, srcStack)) continue;
+            if (transferItems(level, container, i, player, true)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean transferItemsFromPlayer(Level level, Container container, Player player) {
+        int inventorySlot = player.getInventory().selected;
+        ItemStack srcStack = player.getItemInHand(InteractionHand.MAIN_HAND);
+        if (!instance.filterTest(level, srcStack)) return false;
+        return transferItems(level, container, inventorySlot, player, false);
+    }
+
 
     private void dropItems(Level level, ItemStack itemStack) {
         Direction facing = StorageBox.getDirectionFacing(instance.getBlockState());

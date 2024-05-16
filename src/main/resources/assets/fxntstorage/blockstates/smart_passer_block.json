@@ -1,0 +1,30 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "fxntstorage:block/smart_passer_block"
+    },
+    "facing=up": {
+      "model": "fxntstorage:block/smart_passer_block",
+      "x": 180
+    },
+    "facing=south": {
+      "model": "fxntstorage:block/smart_passer_block",
+      "x": 90
+    },
+    "facing=west": {
+      "model": "fxntstorage:block/smart_passer_block",
+      "x": 90,
+      "y": 90
+    },
+    "facing=north": {
+      "model": "fxntstorage:block/smart_passer_block",
+      "x": 90,
+      "y": 180
+    },
+    "facing=east": {
+      "model": "fxntstorage:block/smart_passer_block",
+      "x": 90,
+      "y": 270
+    }
+  }
+}

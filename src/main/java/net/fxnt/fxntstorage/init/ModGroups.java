@@ -28,6 +28,8 @@ public class ModGroups {
                         entries.accept(ModBlocks.COPPER_BACK_PACK);
                         entries.accept(ModBlocks.BRASS_BACK_PACK);
                         entries.accept(ModBlocks.HARDENED_BACK_PACK);
+                        entries.accept(ModBlocks.PASSER_BLOCK);
+                        entries.accept(ModBlocks.SMART_PASSER_BLOCK);
                         entries.accept(ModItems.BACK_PACK_BLANK_UPGRADE);
                         entries.accept(ModItems.BACK_PACK_MAGNET_UPGRADE);
                         entries.accept(ModItems.BACK_PACK_PICKBLOCK_UPGRADE);

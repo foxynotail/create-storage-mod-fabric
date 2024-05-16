@@ -8,7 +8,6 @@ import com.simibubi.create.foundation.blockEntity.behaviour.inventory.InvManipul
 import com.simibubi.create.foundation.blockEntity.behaviour.inventory.VersionedInventoryTrackerBehaviour;
 import com.simibubi.create.foundation.utility.BlockFace;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.config.Config;
 import net.fxnt.fxntstorage.containers.util.ContainerSaveContents;
 import net.fxnt.fxntstorage.containers.util.StorageBoxEntityHelper;
@@ -23,6 +22,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -202,9 +202,14 @@ public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContain
         return helper.canTakeItemThroughFace(this.level, index, itemStack, direction);
     }
 
-    public boolean transferItems(ItemStack itemStack, int itemSlot, Player player, boolean toPlayer) {
-        return helper.transferItems(this.level, itemStack, itemSlot, player, toPlayer);
+    public boolean transferItemsToPlayer(Player player) {
+        return helper.transferItemsToPlayer(this.level, (Container) this, player);
     }
+
+    public boolean transferItemsFromPlayer(Player player) {
+        return helper.transferItemsFromPlayer(this.level, (Container) this, player);
+    }
+
 
     public boolean filterTest(Level level, ItemStack stack) {
         // Prevent inception
