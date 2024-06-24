@@ -1,6 +1,9 @@
 package net.fxnt.fxntstorage.passer;
 
 import com.simibubi.create.content.logistics.filter.FilterItemStack;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.Container;
@@ -18,6 +21,21 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.IntStream;
 
 public class PasserHelper {
+    @SuppressWarnings("UnstableApiUsage")
+    @Nullable
+    public static Storage<ItemVariant> getStorage(Level level, BlockPos blockPos, Direction facing, boolean source) {
+        BlockPos containerPos;
+        Direction interactSide;
+        if (source) {
+            containerPos = blockPos.relative(facing.getOpposite());
+            interactSide = facing;
+        } else {
+            containerPos = blockPos.relative(facing);
+            interactSide = facing.getOpposite();
+        }
+
+        return ItemStorage.SIDED.find(level, containerPos, interactSide);
+    }
 
     @Nullable
     public static Container getContainer(Level level, BlockPos blockPos, Direction facing, boolean source) {

@@ -1,12 +1,16 @@
 package net.fxnt.fxntstorage.passer;
 
+import com.simibubi.create.content.logistics.filter.FilterItemStack;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.filtering.FilteringBehaviour;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fxnt.fxntstorage.init.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,6 +37,7 @@ public class PasserSmartEntity extends SmartBlockEntity {
                 new FilteringBehaviour(this, new PasserFilteringBox()).showCount());
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public <T extends BlockEntity> void serverTick(Level level, BlockPos blockPos, BlockEntity blockEntity) {
         if (level != null && !level.isClientSide) {
             lastTick++;
@@ -44,11 +49,11 @@ public class PasserSmartEntity extends SmartBlockEntity {
             doTick = false;
 
             this.facing = this.getBlockState().getValue(FACING);
-            Container srcContainer = PasserHelper.getContainer(level, blockPos, this.facing, true);
+            Storage<ItemVariant> srcContainer = PasserHelper.getStorage(level, blockPos, this.facing, true);
             if (srcContainer == null) {
                 return;
             }
-            Container dstContainer = PasserHelper.getContainer(level, blockPos, this.facing, false);
+            Storage<ItemVariant> dstContainer = PasserHelper.getStorage(level, blockPos, this.facing, false);
             if (dstContainer == null) {
                 return;
             }
@@ -57,8 +62,12 @@ public class PasserSmartEntity extends SmartBlockEntity {
             int amount = filtering.getAmount();
             boolean fixedAmount = !filtering.upTo;
 
-            PasserHelper.passItems(level, srcContainer, dstContainer, this.facing, amount, fixedAmount, filterItem); // Set to limit set by filter
+            try(Transaction t = Transaction.openOuter()) {
+                long moved = StorageUtil.move(srcContainer, dstContainer, variant -> FilterItemStack.of(filterItem).test(level, variant.toStack()), amount, t);
+                if(!fixedAmount || amount == moved) { // Aborts if the amount is fixed, but fewer items were moved
+                    t.commit();
+                }
+            }
         }
     }
-
 }
