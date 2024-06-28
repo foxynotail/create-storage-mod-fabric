@@ -7,7 +7,6 @@ import net.fxnt.fxntstorage.backpacks.upgrades.UpgradeItem;
 import net.fxnt.fxntstorage.backpacks.util.BackPackNetworkHelper;
 import net.fxnt.fxntstorage.init.ModItems;
 import net.fxnt.fxntstorage.init.ModTags;
-import net.fxnt.fxntstorage.network.BackPackPackets;
 import net.fxnt.fxntstorage.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

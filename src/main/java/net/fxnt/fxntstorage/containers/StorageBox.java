@@ -46,11 +46,11 @@ public class StorageBox extends BaseEntityBlock implements EntityBlock {
     public static final BooleanProperty VOID_UPGRADE = BooleanProperty.create("void_upgrade");
     private final String title;
     private final int slotCount;
-    private static long lastInteractionTime = 0;
-    private static final long INTERACTION_COOLDOWN = 200; // cooldown in milliseconds
+    private long lastInteractionTime = 0;
+    private final long INTERACTION_COOLDOWN = 200; // cooldown in milliseconds
 
     public StorageBox(FabricBlockSettings properties, int slotCount, String title) {
-        super(properties.copyOf(Blocks.IRON_BLOCK));
+        super(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK));
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
         this.registerDefaultState(this.defaultBlockState().setValue(STORAGE_USED, EnumProperties.StorageUsed.EMPTY));
         this.registerDefaultState(this.defaultBlockState().setValue(VOID_UPGRADE, false));

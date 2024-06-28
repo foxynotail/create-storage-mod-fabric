@@ -1,9 +1,7 @@
 package net.fxnt.fxntstorage.backpacks.upgrades;
 
 import com.simibubi.create.AllSoundEvents;
-import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.backpacks.util.BackPackNetworkHelper;
-import net.fxnt.fxntstorage.network.BackPackPackets;
 import net.fxnt.fxntstorage.util.ParticleHelper;
 import net.minecraft.client.player.Input;
 import net.minecraft.core.BlockPos;

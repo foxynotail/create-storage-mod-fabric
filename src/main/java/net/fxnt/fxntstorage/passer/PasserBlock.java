@@ -30,7 +30,7 @@ public class PasserBlock extends BaseEntityBlock {
     public final boolean isSmart;
 
     public PasserBlock(FabricBlockSettings properties, boolean isSmart) {
-        super(properties.copyOf(Blocks.IRON_BLOCK).hardness(1.5f));
+        super(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).hardness(1.5f));
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.DOWN));
         this.isSmart = isSmart;
     }

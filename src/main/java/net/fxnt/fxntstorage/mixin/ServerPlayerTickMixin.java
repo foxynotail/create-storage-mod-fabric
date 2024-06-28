@@ -12,10 +12,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerTickMixin {
     @Unique
-    private boolean doMixin = true;
+    private final boolean doMixin = true;
+    @Unique
     private int slowTick = 0;
+    @Unique
     private int mediumTick = 0;
+    @Unique
     private final int slowTicks = 30;
+    @Unique
     private final int mediumTicks = 15;
 
     @Inject(method = "tick", at = @At("HEAD"))

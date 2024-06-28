@@ -6,10 +6,8 @@ import net.fxnt.fxntstorage.backpacks.main.BackPackMenu;
 import net.fxnt.fxntstorage.backpacks.upgrades.JetpackController;
 import net.fxnt.fxntstorage.backpacks.util.BackPackNetworkHelper;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;

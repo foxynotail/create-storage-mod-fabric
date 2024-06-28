@@ -164,9 +164,7 @@ public class StorageBoxEntityHelper<T extends StorageBoxEntity> {
         }
         if (!itemStack.isEmpty() && toPlayer) dropItems(level, itemStack);
 
-        if (itemStack.isEmpty()) return true;
-
-        return false;
+        return itemStack.isEmpty();
     }
 
 

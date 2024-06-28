@@ -1,10 +1,9 @@
 package net.fxnt.fxntstorage.backpacks.main;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.Sets;
+import com.simibubi.create.AllTags;
 import io.github.fabricators_of_create.porting_lib.tags.Tags;
 import io.github.fabricators_of_create.porting_lib.tool.ToolActions;
-import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.init.ModTags;
 import net.fxnt.fxntstorage.network.HighStackCountSync;
 import net.fxnt.fxntstorage.util.Util;
@@ -12,7 +11,6 @@ import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.ItemTags;
@@ -25,8 +23,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.function.Supplier;
+import java.util.Optional;
+import java.util.Set;
 
 public class BackPackMenu extends AbstractContainerMenu {
     public Container container;
@@ -38,6 +36,9 @@ public class BackPackMenu extends AbstractContainerMenu {
     private int quickcraftType = -1;
     private int quickcraftStatus;
     private final Set<Slot> quickcraftSlots = Sets.newHashSet();
+    private final int containerSlotCount = BackPackBlock.getContainerSlotCount();
+    private final int toolSlotCount = BackPackBlock.getToolSlotCount();
+    private final int upgradeSlotCount = BackPackBlock.getUpgradeSlotCount();
 
     public BackPackMenu(MenuType<?> type, int containerId, Inventory playerInventory, Container container, byte backPackType) {
         super(type, containerId);
@@ -68,10 +69,6 @@ public class BackPackMenu extends AbstractContainerMenu {
     public void initSlots() {
 
         Inventory playerInventory = player.getInventory();
-
-        int containerSlotCount = BackPackBlock.getContainerSlotCount();
-        int toolSlotCount = BackPackBlock.getToolSlotCount();
-        int upgradeSlotCount = BackPackBlock.getUpgradeSlotCount();
 
         // Add Container Slots
         int index = 0;
@@ -161,13 +158,28 @@ public class BackPackMenu extends AbstractContainerMenu {
         }
     }
 
+    private boolean isUpgradeItem(ItemStack itemStack) {
+        return itemStack.is(ModTags.BACK_PACK_UPGRADE);
+    }
+
+    private boolean isToolItem(ItemStack itemStack) {
+        return itemStack.is(ItemTags.TOOLS)
+                || itemStack.canPerformAction(ToolActions.SWORD_SWEEP)
+                || itemStack.canPerformAction(ToolActions.SHEARS_HARVEST)
+                || itemStack.is(Tags.Items.TOOLS_BOWS)
+                || itemStack.is(Tags.Items.TOOLS_FISHING_RODS)
+                || itemStack.is(Tags.Items.TOOLS_CROSSBOWS)
+                || itemStack.is(Tags.Items.TOOLS_SHIELDS)
+                || itemStack.is(AllTags.AllItemTags.WRENCH.tag);
+    }
+
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index) {
         // if item is upgrade item, put into upgrade slot (Only from player inventory)
         if (index > slotCount - 1) {
             Slot slot = this.slots.get(index);
             ItemStack slotItem = slot.getItem();
-            if (slotItem.is(ModTags.BACK_PACK_UPGRADE)) {
+            if (isUpgradeItem(slotItem)) {
                 // Are there any free upgrade slots
                 for (int i = Util.UPGRADE_SLOT_START_RANGE; i < Util.UPGRADE_SLOT_END_RANGE; i++) {
                     if(this.slots.get(i).getItem().isEmpty()) {
@@ -182,14 +194,7 @@ public class BackPackMenu extends AbstractContainerMenu {
             Slot slot = this.slots.get(index);
             ItemStack slotItem = slot.getItem();
             // SHEARS / BOWS / FISHING RODS / SHIELDS
-            if (slotItem.is(ItemTags.TOOLS)
-                    || slotItem.canPerformAction(ToolActions.SWORD_SWEEP)
-                    || slotItem.canPerformAction(ToolActions.SHEARS_HARVEST)
-                    || slotItem.is(Tags.Items.TOOLS_BOWS)
-                    || slotItem.is(Tags.Items.TOOLS_FISHING_RODS)
-                    || slotItem.is(Tags.Items.TOOLS_CROSSBOWS)
-                    || slotItem.is(Tags.Items.TOOLS_SHIELDS)
-            ) {
+            if (isToolItem(slotItem)) {
                 // Are there any free tool ade slots
                 for (int i = Util.TOOL_SLOT_START_RANGE; i < Util.TOOL_SLOT_END_RANGE; i++) {
                     if(this.slots.get(i).getItem().isEmpty()) {
@@ -440,7 +445,19 @@ public class BackPackMenu extends AbstractContainerMenu {
                 if (slotId >= Util.ITEM_SLOT_END_RANGE || clickAction == ClickAction.SECONDARY) {
 
                     int freeContainerSlot = -1;
-                    for(int i = 0; i < container.getContainerSize(); ++i) {
+
+                    // Free slot (need to determine if sending to tool / upgrade or main container slots
+                    int slotRangeStart = 0;
+                    int slotRangeEnd = Util.ITEM_SLOT_END_RANGE;
+                    if (isUpgradeItem(itemStack)) {
+                        slotRangeStart = Util.UPGRADE_SLOT_START_RANGE;
+                        slotRangeEnd = Util.UPGRADE_SLOT_END_RANGE;
+                    } else if(isToolItem((itemStack))) {
+                        slotRangeStart = Util.TOOL_SLOT_START_RANGE;
+                        slotRangeEnd = Util.TOOL_SLOT_END_RANGE;
+                    }
+
+                    for(int i = slotRangeStart; i < slotRangeEnd; ++i) {
                         if (container.getItem(i).isEmpty()) {
                             freeContainerSlot = i;
                             break;

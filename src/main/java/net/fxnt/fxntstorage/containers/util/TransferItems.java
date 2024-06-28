@@ -39,16 +39,10 @@ public class TransferItems {
     }
 
     public static boolean canTakeItemFromContainer(Container srcContainer, Container dstContainer, ItemStack stack, int slot) {
-        if (!dstContainer.canTakeItem(srcContainer, slot, stack)) {
-            return false;
-        }
-        return true;
+        return dstContainer.canTakeItem(srcContainer, slot, stack);
     }
     public static boolean canPlaceItemInContainer(Container dstContainer, ItemStack stack, int slot) {
-        if (!dstContainer.canPlaceItem(slot, stack)) {
-            return false;
-        }
-        return true;
+        return dstContainer.canPlaceItem(slot, stack);
     }
 
     public static boolean isFullContainer(Container container) {

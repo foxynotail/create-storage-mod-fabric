@@ -37,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class BackPackBlock extends BaseEntityBlock implements EntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    //private final String title;
     public static final int containerSlotCount = 108;
     public final int maxStackSize;
     public static final int toolSlotCount = 24;
@@ -201,6 +200,7 @@ public class BackPackBlock extends BaseEntityBlock implements EntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(blockEntityType, ModBlocks.BACK_PACK_ENTITY, (type, world, pos, entity) -> {
+            //FXNTStorage.LOGGER.info("Block Ticker: {}", pos);
             entity.serverTick(type, world, entity);
         });
     }

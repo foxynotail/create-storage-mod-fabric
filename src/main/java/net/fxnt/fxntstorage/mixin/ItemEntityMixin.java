@@ -30,7 +30,7 @@ public abstract class ItemEntityMixin {
     @Shadow private int pickupDelay;
     @Shadow private @Nullable UUID target;
     @Unique
-    private boolean doMixin = true;
+    private final boolean doMixin = true;
 
     @Inject(method = "playerTouch", at = @At(value = "HEAD"), cancellable = true)
     private void fxnt$onPlayerPickUpItem(Player player, CallbackInfo ci) {

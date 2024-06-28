@@ -1,9 +1,10 @@
 package net.fxnt.fxntstorage.passer;
 
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fxnt.fxntstorage.init.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,17 +34,17 @@ public class PasserEntity extends BlockEntity {
             doTick = false;
 
             this.facing = this.getBlockState().getValue(FACING);
-            Container srcContainer = PasserHelper.getContainer(level, blockPos, this.facing, true);
+            Storage<ItemVariant> srcContainer = PasserHelper.getStorage(level, blockPos, this.facing, true);
             if (srcContainer == null) {
                 return;
             }
-            Container dstContainer = PasserHelper.getContainer(level, blockPos, this.facing, false);
+            Storage<ItemVariant> dstContainer = PasserHelper.getStorage(level, blockPos, this.facing, false);
             if (dstContainer == null) {
                 return;
             }
 
-            ItemStack filterItem = ItemStack.EMPTY;
-            int amount = 1;
+            ItemVariant filterItem = ItemVariant.of(ItemStack.EMPTY);
+            long amount = 1;
             boolean fixedAmount = false;
 
             PasserHelper.passItems(level, srcContainer, dstContainer, this.facing, amount, fixedAmount, filterItem); // Set to limit set by filter

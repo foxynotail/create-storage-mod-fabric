@@ -22,7 +22,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -203,11 +202,11 @@ public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContain
     }
 
     public boolean transferItemsToPlayer(Player player) {
-        return helper.transferItemsToPlayer(this.level, (Container) this, player);
+        return helper.transferItemsToPlayer(this.level, this, player);
     }
 
     public boolean transferItemsFromPlayer(Player player) {
-        return helper.transferItemsFromPlayer(this.level, (Container) this, player);
+        return helper.transferItemsFromPlayer(this.level, this, player);
     }
 
 
@@ -225,11 +224,7 @@ public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContain
         BlockState blockState = this.getBlockState();
         Level level = this.getLevel();
         if (level != null) {
-            if (blockState.getValue(VOID_UPGRADE)) {
-                this.voidUpgrade = false;
-            } else {
-                this.voidUpgrade = true;
-            }
+            this.voidUpgrade = !blockState.getValue(VOID_UPGRADE);
             level.setBlockAndUpdate(this.getBlockPos(), blockState.setValue(VOID_UPGRADE, this.voidUpgrade));
         }
     }

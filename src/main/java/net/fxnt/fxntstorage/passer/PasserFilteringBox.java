@@ -77,11 +77,8 @@ public class PasserFilteringBox extends ValueBoxTransform.Sided {
         if (facing == Direction.UP || facing == Direction.DOWN) {
             return direction.getAxis().isHorizontal();
         } else {
-            if (direction != facing && direction != facing.getOpposite()) {
-                return true;
-            }
+            return direction != facing && direction != facing.getOpposite();
         }
-        return false;
     }
 
     @Override

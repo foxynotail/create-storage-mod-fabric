@@ -29,9 +29,8 @@ public class BackPackEntity extends BlockEntity implements ImplementedContainer,
     public NonNullList<ItemStack> items;
     private final BlockPos pos;
     public int containerSlotCount;
-    private static final int currentTick = 0;
-    private static int lastTick = 0;
-    private static final int updateEveryXTicks = 30;
+    private int lastTick = 0;
+    private final int updateEveryXTicks = 30;
     private boolean doTick = false;
     public Container container;
     public int[] SIDED_SLOTS = new int[containerSlotCount];
@@ -249,23 +248,23 @@ public class BackPackEntity extends BlockEntity implements ImplementedContainer,
     public <T extends BlockEntity> void serverTick(Level level, BlockPos blockPos, BlockEntity blockEntity) {
         if (level != null) {
             if (!level.isClientSide) {
-                lastTick++;
-                if (lastTick >= updateEveryXTicks) {
-                    lastTick = 0;
-                    doTick = true;
+                this.lastTick++;
+                if (this.lastTick >= this.updateEveryXTicks) {
+                    this.lastTick = 0;
+                    this.doTick = true;
                 }
-                if (!doTick) return;
+                if (!this.doTick) return;
 
-                if (!initializedBlock) {
+                if (!this.initializedBlock) {
                     level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), BackPackBlock.UPDATE_ALL);
-                    initializedBlock = true;
+                    this.initializedBlock = true;
                 }
 
                 if (this.upgrades.contains(Util.MAGNET_UPGRADE)) {
                     BackPackAsBlockUpgradeHandler upgradeHandler = new BackPackAsBlockUpgradeHandler(this);
                     upgradeHandler.applyMagnetUpgrade();
                 }
-                doTick = false;
+                this.doTick = false;
             }
         }
     }
@@ -285,45 +284,5 @@ public class BackPackEntity extends BlockEntity implements ImplementedContainer,
         refreshUpgrades();
         super.setChanged();
     }
-    /*
-        // For hopper, if stack count in slot is less than max slot size, then send through reduced stack count so hopper can fill this slot
-        // EG. if stack limit is 100, and slot has 99, send count of 63 (1 remaining)
-        if (slot < 0 && slot >= this.items.size()) return ItemStack.EMPTY;
-
-        ItemStack itemStack = this.items.get(slot);
-
-        int remainingSpaceInSlot = this.getMaxStackSize() - itemStack.getCount();
-        //                                  100            -        1          = 99;
-        int fakeSlotCount = this.items.get(slot).getCount();
-        if (remainingSpaceInSlot >= 64) {
-            fakeSlotCount = 1;
-        } else {
-            fakeSlotCount = remainingSpaceInSlot;
-        }
-        if (fakeSlotCount != itemStack.getCount()) {
-            itemStack = new ItemStack(itemStack.getItem(), fakeSlotCount);
-
-            // Set this fake itemstack to the fakeItems list
-            fakeItems.set(slot, itemStack);
-        }
-
-        return itemStack;
-        */
-
-    // If we made a full copy imaginary inventory of all of the items:
-    // Update the existing slots with new items added to the imaginary slots or remove items from existing slots if the counts go down.
-    // Incoming: Will only work if slots free in inventory, unless we have one extra slot that can be any of the non full stacks
-    // Outgoing: no issues
-
-    // How to solve having no space left
-    // If always 1 blank slot, how do we know what item it's allowed to be?
-    // If a hopper puts an item into the 1 blank slot and it doesn't match any of the existing stacks, then that item will vanish
-    // So that slot needs to only allow items in that haven't got a full stack size
-    // How?
-    // Hook into the mayPlace and say false if the item being checked isn't in the list of items we've actually got
-
-    // REMEMBER
-    // Hoppers / chutes don't always use setItem, the often just change the count of the itemstack directly in this inventory
-
 
 }

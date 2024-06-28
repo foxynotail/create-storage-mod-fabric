@@ -2,7 +2,6 @@ package net.fxnt.fxntstorage.mixin;
 
 import net.fxnt.fxntstorage.backpacks.upgrades.JetpackController;
 import net.fxnt.fxntstorage.backpacks.util.BackPackNetworkHelper;
-import net.fxnt.fxntstorage.network.BackPackPackets;
 import net.minecraft.client.player.LocalPlayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LocalPlayer.class)
 public class LocalPlayerTickMixin {
     @Unique
-    private boolean doMixin = true;
+    private final boolean doMixin = true;
 
     @Inject(method = "aiStep", at = @At(value = "FIELD", target = "Lnet/minecraft/client/player/Input;jumping:Z", ordinal = 0), cancellable = true)
     private void fxnt$OnJumpingInput(CallbackInfo ci) {
