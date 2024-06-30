@@ -12,6 +12,8 @@ import net.fxnt.fxntstorage.containers.StorageBoxEntity;
 import net.fxnt.fxntstorage.passer.PasserBlock;
 import net.fxnt.fxntstorage.passer.PasserEntity;
 import net.fxnt.fxntstorage.passer.PasserSmartEntity;
+import net.fxnt.fxntstorage.simple_storage.SimpleStorageBox;
+import net.fxnt.fxntstorage.simple_storage.SimpleStorageBoxEntity;
 import net.fxnt.fxntstorage.util.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,7 +35,6 @@ public class ModBlocks {
             new StorageBox(FabricBlockSettings.create(), Util.COPPER_STORAGE_BOX_SIZE, "copper_storage_box"), true);
     public static final Block BRASS_STORAGE_BOX = registerBlock("brass_storage_box",
             new StorageBox(FabricBlockSettings.create(), Util.BRASS_STORAGE_BOX_SIZE, "brass_storage_box"), true);
-
     public static final Block HARDENED_STORAGE_BOX = registerBlock("hardened_storage_box",
             new StorageBox(FabricBlockSettings.create(), Util.HARDENED_STORAGE_BOX_SIZE, "hardened_storage_box"), true);
     public static final Block BACK_PACK = registerBlock("back_pack",
@@ -51,6 +52,8 @@ public class ModBlocks {
             new PasserBlock(FabricBlockSettings.create(), false), true);
     public static final Block SMART_PASSER_BLOCK = registerBlock("smart_passer_block",
             new PasserBlock(FabricBlockSettings.create(), true), true);
+    public static final Block SIMPLE_STORAGE_BOX = registerBlock("simple_storage_box",
+            new SimpleStorageBox(FabricBlockSettings.create(), "simple_storage_box"), true);
 
     // ITEMS
     public static final Item BACK_PACK_ITEM = registerBlockItem("back_pack",
@@ -77,6 +80,8 @@ public class ModBlocks {
             registerBlockEntity("passer_entity", BlockEntityType.Builder.of(PasserEntity::new, PASSER_BLOCK));
     public static final BlockEntityType<PasserSmartEntity> SMART_PASSER_ENTITY =
             registerBlockEntity("smart_passer_entity", BlockEntityType.Builder.of(PasserSmartEntity::new, SMART_PASSER_BLOCK));
+    public static final BlockEntityType<SimpleStorageBoxEntity> SIMPLE_STORAGE_BOX_ENTITY =
+            registerBlockEntity("simple_storage_box_entity", BlockEntityType.Builder.of(SimpleStorageBoxEntity::new, SIMPLE_STORAGE_BOX));
 
     private static Block registerBlock(String name, Block block, boolean autoRegisterItem) {
         if (autoRegisterItem) autoRegisterBlockItem(name, block);

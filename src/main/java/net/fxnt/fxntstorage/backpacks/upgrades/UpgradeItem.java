@@ -59,6 +59,10 @@ public class UpgradeItem extends Item {
             case Util.FALLDAMAGE_UPGRADE:
                 addUpgradeDetails(tooltipComponents, name);
                 break;
+            case Util.STORAGE_BOX_VOID_UPGRADE:
+            case Util.STORAGE_BOX_CAPACITY_UPGRADE:
+                addStorageBoxUpgradeDetails(tooltipComponents, name);
+                break;
             case Util.FLIGHT_UPGRADE:
                 addFlightUpgradeDetails(tooltipComponents, name);
                 break;
@@ -81,6 +85,17 @@ public class UpgradeItem extends Item {
             for (String line : text) {
                 tooltipComponents.add(Component.literal(line).withStyle(ChatFormatting.RED, ChatFormatting.ITALIC));
             }
+        }
+    }
+
+    private void addStorageBoxUpgradeDetails(List<Component> tooltipComponents, String upgradeName) {
+        List<String> text = getUpgradeText(upgradeName, true);
+        for (String line : text) {
+            tooltipComponents.add(Component.literal(line).withStyle(ChatFormatting.DARK_GRAY));
+        }
+        text = getUpgradeText(upgradeName, false);
+        for (String line : text) {
+            tooltipComponents.add(Component.literal(line).withStyle(ChatFormatting.GOLD));
         }
     }
     private void addFlightUpgradeDetails(List<Component> tooltipComponents, String upgradeName) {
@@ -130,6 +145,10 @@ public class UpgradeItem extends Item {
                 return toolswapText(isActive);
             case Util.FALLDAMAGE_UPGRADE:
                 return fallDamageText(isActive);
+            case Util.STORAGE_BOX_VOID_UPGRADE:
+                return storageBoxVoidText(isActive);
+            case Util.STORAGE_BOX_CAPACITY_UPGRADE:
+                return storageBoxCapacityText(isActive);
         }
         return new ArrayList<>();
     }
@@ -201,6 +220,20 @@ public class UpgradeItem extends Item {
     private List<String> fallDamageText(boolean isActive) {
         String text = "Prevents the player from taking fall damage";
         String shiftText = "Upgrade activates while worn on the Player's back.";
+        if (isActive) return Util.wrapText(text, maxLength);
+        else return Util.wrapText(shiftText, maxLength);
+    }
+
+    private List<String> storageBoxVoidText(boolean isActive) {
+        String text = "Voids Excess Items";
+        String shiftText = "Only works on Simple Storage Boxes";
+        if (isActive) return Util.wrapText(text, maxLength);
+        else return Util.wrapText(shiftText, maxLength);
+    }
+
+    private List<String> storageBoxCapacityText(boolean isActive) {
+        String text = "Doubles Simple Storage Box Capacity";
+        String shiftText = "Only works on Simple Storage Boxes";
         if (isActive) return Util.wrapText(text, maxLength);
         else return Util.wrapText(shiftText, maxLength);
     }

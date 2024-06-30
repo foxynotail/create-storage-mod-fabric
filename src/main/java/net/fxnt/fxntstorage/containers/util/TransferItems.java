@@ -1,6 +1,5 @@
 package net.fxnt.fxntstorage.containers.util;
 
-import net.fxnt.fxntstorage.FXNTStorage;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +10,6 @@ public class TransferItems {
 
     public static ItemStack transferItems(Container srcContainer, int index, Container dstContainer, int amount, boolean toPlayer) {
 
-        FXNTStorage.LOGGER.info("Transfer Items");
         ItemStack remainder = ItemStack.EMPTY;
 
         if (isFullContainer(dstContainer)) {
@@ -20,7 +18,6 @@ public class TransferItems {
             if (!srcContainer.getItem(index).isEmpty()) {
                 ItemStack srcStack = srcContainer.getItem(index).copy();
                 if (!canTakeItemFromContainer(dstContainer, srcContainer, srcStack, index)) return remainder;
-                FXNTStorage.LOGGER.info("Can Take Item");
 
                 ItemStack moveStack = addItem(dstContainer, srcContainer.removeItem(index, amount), toPlayer);
                 if (moveStack.isEmpty()) {

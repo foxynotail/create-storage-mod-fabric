@@ -2,7 +2,6 @@ package net.fxnt.fxntstorage.mixin;
 
 import net.fxnt.fxntstorage.backpacks.util.BackPackHelper;
 import net.fxnt.fxntstorage.backpacks.util.BackPackNetworkHelper;
-import net.fxnt.fxntstorage.network.BackPackPackets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;

@@ -5,6 +5,7 @@
     "fxntstorage:andesite_storage_box",
     "fxntstorage:copper_storage_box",
     "fxntstorage:brass_storage_box",
-    "fxntstorage:hardened_storage_box"
+    "fxntstorage:hardened_storage_box",
+    "fxntstorage:simple_storage_box"
   ]
 }

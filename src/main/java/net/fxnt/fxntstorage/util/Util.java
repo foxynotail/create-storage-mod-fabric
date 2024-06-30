@@ -45,6 +45,8 @@ public class Util {
     public static final String TOOLSWAP_UPGRADE_DEACTIVATED = "back_pack_toolswap_upgrade_deactivated";
     public static final String FALLDAMAGE_UPGRADE = "back_pack_falldamage_upgrade";
     public static final String FALLDAMAGE_UPGRADE_DEACTIVATED = "back_pack_falldamage_upgrade_deactivated";
+    public static final String STORAGE_BOX_VOID_UPGRADE = "storage_box_void_upgrade";
+    public static final String STORAGE_BOX_CAPACITY_UPGRADE = "storage_box_capacity_upgrade";
 
     // BackPack Compartment Sizes
     public static final int ITEM_SLOT_START_RANGE = 0;

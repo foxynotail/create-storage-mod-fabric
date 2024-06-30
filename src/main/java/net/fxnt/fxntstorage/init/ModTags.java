@@ -19,6 +19,7 @@ public class ModTags {
     public static final TagKey<Item> STORAGE_BOX_ITEM = itemTag("storage_box");
     public static final TagKey<Item> BACK_PACK_ITEM = itemTag("back_pack");
     public static final TagKey<Item> BACK_PACK_UPGRADE = itemTag("back_pack_upgrade");
+    public static final TagKey<Item> STORAGE_BOX_UPGRADE = itemTag("storage_box_upgrade");
 
 
     public static <T> TagKey<T> optionalTag(Registry<T> registry, ResourceLocation id) {

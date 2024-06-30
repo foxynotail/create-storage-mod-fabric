@@ -24,34 +24,57 @@ public class PasserHelper {
         }
         return null;
     }
-    public static boolean passItems(Level level, Storage<ItemVariant> srcStorage, Storage<ItemVariant> dstStorage, Direction facing, long amount, boolean fixedAmount, ItemVariant filterItem) {
+
+    public static void passItems(Level level, Storage<ItemVariant> srcStorage, Storage<ItemVariant> dstStorage, Direction facing, long amount, boolean fixedAmount, ItemVariant filterItem) {
+
+        if (!srcStorage.supportsExtraction()) return;
+        if (!dstStorage.supportsInsertion()) return;
 
         try (Transaction transaction = Transaction.openOuter()) {
-            long moved = 0;
-            for (StorageView<ItemVariant> view : srcStorage) {
-                if (view.isResourceBlank()) continue;
-                ItemVariant variant = view.getResource();
+            for (StorageView<ItemVariant> srcStack : srcStorage) {
+
+                if (srcStack.isResourceBlank()) continue;
+                ItemVariant srcItem = srcStack.getResource();
 
                 // Check Filter
-                if (!FilterItemStack.of(filterItem.toStack()).test(level, variant.toStack())) continue;
-                if (fixedAmount && view.getAmount() < amount) continue;
+                if (!FilterItemStack.of(filterItem.toStack()).test(level, srcItem.toStack())) continue;
+                if (fixedAmount && srcStack.getAmount() < amount) continue;
 
-                long extracted = srcStorage.extract(variant, amount, transaction);
-                if (extracted > 0) {
-                    long inserted = dstStorage.insert(variant, extracted, transaction);
-                    moved += inserted;
-
-                    if (inserted < extracted) {
-                        srcStorage.insert(variant, extracted - inserted, transaction);
+                // Check if can insert items into destination
+                long insert = dstStorage.insert(srcItem, amount, transaction);
+                boolean doExtract = false;
+                if (insert > 0) {
+                    if (fixedAmount && insert == amount) {
+                        doExtract = true;
+                    } else if (!fixedAmount) {
+                        doExtract = true;
                     }
                 }
-                if (moved >= amount) {
-                    transaction.commit();
-                    return true;
+
+                if (doExtract) {
+                    long extract = srcStorage.extract(srcItem, insert, transaction);
+                    if (extract == insert) {
+                        transaction.commit();
+                        return;
+                    } else if (extract > 0 && extract < insert) {
+                        // If not enough items to insert full amount, close transaction & reduce amount inserted
+                        transaction.abort();
+                        try(Transaction newTransaction = Transaction.openOuter()) {
+                            insert = dstStorage.insert(srcItem, extract, newTransaction);
+                            extract = srcStorage.extract(srcItem, extract, newTransaction);
+                            if (insert == extract) {
+                                newTransaction.commit();
+                                return;
+                            } else {
+                                newTransaction.abort();
+                                return;
+                            }
+                        }
+                    }
                 }
             }
-            transaction.commit();
+            transaction.abort();
         }
-        return false;
     }
+
 }

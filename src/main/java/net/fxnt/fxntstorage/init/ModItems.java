@@ -27,6 +27,8 @@ public class ModItems {
     public static final Item BACK_PACK_TOOLSWAP_UPGRADE_DEACTIVATED = registerItem(Util.TOOLSWAP_UPGRADE_DEACTIVATED, new UpgradeItem(new FabricItemSettings(), Util.TOOLSWAP_UPGRADE_DEACTIVATED));
     public static final Item BACK_PACK_FALLDAMAGE_UPGRADE = registerItem(Util.FALLDAMAGE_UPGRADE, new UpgradeItem(new FabricItemSettings(), Util.FALLDAMAGE_UPGRADE));
     public static final Item BACK_PACK_FALLDAMAGE_UPGRADE_DEACTIVATED = registerItem(Util.FALLDAMAGE_UPGRADE_DEACTIVATED, new UpgradeItem(new FabricItemSettings(), Util.FALLDAMAGE_UPGRADE_DEACTIVATED));
+    public static final Item STORAGE_BOX_VOID_UPGRADE = registerItem(Util.STORAGE_BOX_VOID_UPGRADE, new UpgradeItem(new FabricItemSettings(), Util.STORAGE_BOX_VOID_UPGRADE));
+    public static final Item STORAGE_BOX_CAPACITY_UPGRADE = registerItem(Util.STORAGE_BOX_CAPACITY_UPGRADE, new UpgradeItem(new FabricItemSettings(), Util.STORAGE_BOX_CAPACITY_UPGRADE));
     private static Item registerItem(String name, Item item) {
         return Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(FXNTStorage.MOD_ID, name), item);
     }

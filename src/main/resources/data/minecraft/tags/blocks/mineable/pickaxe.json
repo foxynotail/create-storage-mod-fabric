@@ -6,6 +6,7 @@
     "fxntstorage:copper_storage_box",
     "fxntstorage:brass_storage_box",
     "fxntstorage:hardened_storage_box",
+    "fxntstorage:simple_storage_box",
     "fxntstorage:passer_block",
     "fxntstorage:smart_passer_block"
   ]

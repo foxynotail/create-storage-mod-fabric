@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "fxntstorage:storage_box_void_upgrade",
+    "fxntstorage:storage_box_capacity_upgrade"
+  ]
+}

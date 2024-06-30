@@ -1,7 +1,6 @@
 package net.fxnt.fxntstorage.backpacks.upgrades;
 
 import io.github.fabricators_of_create.porting_lib.tool.ToolActions;
-import net.fxnt.fxntstorage.network.InventoryPackets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.tags.ItemTags;

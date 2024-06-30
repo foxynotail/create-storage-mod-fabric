@@ -23,6 +23,9 @@ public class ModGroups {
                         entries.accept(ModBlocks.COPPER_STORAGE_BOX);
                         entries.accept(ModBlocks.BRASS_STORAGE_BOX);
                         entries.accept(ModBlocks.HARDENED_STORAGE_BOX);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX);
+                        entries.accept(ModItems.STORAGE_BOX_VOID_UPGRADE);
+                        entries.accept(ModItems.STORAGE_BOX_CAPACITY_UPGRADE);
                         entries.accept(ModBlocks.BACK_PACK);
                         entries.accept(ModBlocks.ANDESITE_BACK_PACK);
                         entries.accept(ModBlocks.COPPER_BACK_PACK);
