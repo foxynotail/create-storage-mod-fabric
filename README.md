@@ -82,3 +82,7 @@ Prevents the player taking fall damage while wearing the backpack
 - Can be filtered using Create filters
 - Can transfer up to 64 items at a time
 - Amount to pass is selectable using Create interface. (Hold filter slot and change amount)
+
+# Storage Trim / Casing
+- Basic blocks with connected textures that match the Simple Storage Box variations
+- (Not Implemented) Future use to connect Simple Storage Boxes into a network
