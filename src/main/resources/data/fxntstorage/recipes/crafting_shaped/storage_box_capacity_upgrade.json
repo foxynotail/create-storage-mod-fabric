@@ -11,8 +11,9 @@
     }
   },
   "pattern": [
-    "B",
-    "V"
+    " V ",
+    "VBV",
+    " V "
   ],
   "result": {
     "item": "fxntstorage:storage_box_capacity_upgrade"

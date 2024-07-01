@@ -22,8 +22,38 @@
   "block.fxntstorage.hardened_storage_box": "Hardened Storage Box",
   "container.fxntstorage.hardened_storage_box": "Hardened Storage Box",
 
-  "block.fxntstorage.simple_storage_box": "Simple Storage Box",
-  "container.fxntstorage.simple_storage_box": "Simple Storage Box",
+  "block.fxntstorage.simple_storage_box": "Simple Oak Storage Box",
+  "container.fxntstorage.simple_storage_box": "Simple Oak Storage Box",
+
+  "block.fxntstorage.simple_storage_box_spruce": "Simple Spruce Storage Box",
+  "container.fxntstorage.simple_storage_box_spruce": "Simple Spruce Storage Box",
+
+  "block.fxntstorage.simple_storage_box_birch": "Simple Birch Storage Box",
+  "container.fxntstorage.simple_storage_box_birch": "Simple Birch Storage Box",
+
+  "block.fxntstorage.simple_storage_box_jungle": "Simple Jungle Storage Box",
+  "container.fxntstorage.simple_storage_box_jungle": "Simple Jungle Storage Box",
+
+  "block.fxntstorage.simple_storage_box_acacia": "Simple Acacia Storage Box",
+  "container.fxntstorage.simple_storage_box_acacia": "Simple Acacia Storage Box",
+
+  "block.fxntstorage.simple_storage_box_dark_oak": "Simple Dark Oak Storage Box",
+  "container.fxntstorage.simple_storage_box_dark_oak": "Simple Dark Oak Storage Box",
+
+  "block.fxntstorage.simple_storage_box_mangrove": "Simple Mangrove Storage Box",
+  "container.fxntstorage.simple_storage_box_mangrove": "Simple Mangrove Storage Box",
+
+  "block.fxntstorage.simple_storage_box_cherry": "Simple Cherry Storage Box",
+  "container.fxntstorage.simple_storage_box_cherry": "Simple Cherry Storage Box",
+
+  "block.fxntstorage.simple_storage_box_bamboo": "Simple Bamboo Storage Box",
+  "container.fxntstorage.simple_storage_box_bamboo": "Simple Bamboo Storage Box",
+
+  "block.fxntstorage.simple_storage_box_crimson": "Simple Crimson Storage Box",
+  "container.fxntstorage.simple_storage_box_crimson": "Simple Crimson Storage Box",
+
+  "block.fxntstorage.simple_storage_box_warped": "Simple Warped Storage Box",
+  "container.fxntstorage.simple_storage_box_warped": "Simple Warped Storage Box",
 
   "block.fxntstorage.passer_block": "Passer",
   "block.fxntstorage.smart_passer_block": "Smart Passer",
@@ -69,11 +99,21 @@
   "item.fxntstorage.storage_box_void_upgrade": "Simple Storage Box Void Upgrade",
   "item.fxntstorage.storage_box_capacity_upgrade": "Simple Storage Box Capacity Upgrade",
 
+  "block.fxntstorage.storage_trim": "Oak Storage Trim",
+  "block.fxntstorage.storage_trim_spruce": "Spruce Storage Trim",
+  "block.fxntstorage.storage_trim_birch": "Birch Storage Trim",
+  "block.fxntstorage.storage_trim_jungle": "Jungle Storage Trim",
+  "block.fxntstorage.storage_trim_acacia": "Acacia Storage Trim",
+  "block.fxntstorage.storage_trim_dark_oak": "Dark Oak Storage Trim",
+  "block.fxntstorage.storage_trim_mangrove": "Mangrove Storage Trim",
+  "block.fxntstorage.storage_trim_cherry": "Cherry Storage Trim",
+  "block.fxntstorage.storage_trim_bamboo": "Bamboo Storage Trim",
+  "block.fxntstorage.storage_trim_crimson": "Crimson Storage Trim",
+  "block.fxntstorage.storage_trim_warped": "Warped Storage Trim",
 
   "fxntstorage.tooltip.holdForControls": "Hold [CTRL] for Controls",
   "fxntstorage.tooltip.holdForDescription": "Hold [Shift] for Summary",
 
   "fxntstorage.storage_box_void_upgrade_exists": "This storage box already contains a void upgrade",
   "fxntstorage.storage_box_capacity_upgrade_max": "This storage box has reached maximum capacity"
-
 }

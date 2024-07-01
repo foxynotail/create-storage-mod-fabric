@@ -1,0 +1,195 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "fxntstorage:block/simple_storage_box/simple_storage_box_birch_base"
+      }
+    },
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "fxntstorage:block/simple_storage_box/simple_storage_box_birch_base",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "fxntstorage:block/simple_storage_box/simple_storage_box_birch_base",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "fxntstorage:block/simple_storage_box/simple_storage_box_birch_base",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "storage_used": "empty"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_empty"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "storage_used": "empty"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_empty",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "storage_used": "empty"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_empty",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "storage_used": "empty"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_empty",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "storage_used": "has_items"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_has_items"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "storage_used": "has_items"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_has_items",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "storage_used": "has_items"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_has_items",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "storage_used": "has_items"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_has_items",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "storage_used": "slots_filled"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_slots_filled"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "storage_used": "slots_filled"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_slots_filled",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "storage_used": "slots_filled"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_slots_filled",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "storage_used": "slots_filled"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_slots_filled",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "storage_used": "full"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_full"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "storage_used": "full"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_full",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "storage_used": "full"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_full",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "storage_used": "full"
+      },
+      "apply": {
+        "model": "fxntstorage:block/storage_box/storage_box_full",
+        "y": 270
+      }
+    }
+  ]
+}

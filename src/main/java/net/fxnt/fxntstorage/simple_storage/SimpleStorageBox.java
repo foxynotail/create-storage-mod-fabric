@@ -44,11 +44,11 @@ import java.util.List;
 
 public class SimpleStorageBox extends BaseEntityBlock implements EntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final EnumProperty STORAGE_USED = EnumProperty.create("storage_used", EnumProperties.StorageUsed.class);
+    public static final EnumProperty<EnumProperties.StorageUsed> STORAGE_USED = EnumProperty.create("storage_used", EnumProperties.StorageUsed.class);
     private long lastInteractionTime = 0;
     private final long INTERACTION_COOLDOWN = 200; // cooldown in milliseconds
 
-    public SimpleStorageBox(FabricBlockSettings properties, String title) {
+    public SimpleStorageBox(FabricBlockSettings properties) {
         super(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK));
         this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
         this.registerDefaultState(this.defaultBlockState().setValue(STORAGE_USED, EnumProperties.StorageUsed.EMPTY));

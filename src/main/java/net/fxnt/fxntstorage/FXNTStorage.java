@@ -1,6 +1,7 @@
 package net.fxnt.fxntstorage;
 
 import com.simibubi.create.Create;
+import com.simibubi.create.foundation.data.CreateRegistrate;
 import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import io.github.fabricators_of_create.porting_lib.util.EnvExecutor;
 import net.fabricmc.api.ModInitializer;
@@ -12,6 +13,7 @@ import net.fxnt.fxntstorage.config.Config;
 import net.fxnt.fxntstorage.init.*;
 import net.fxnt.fxntstorage.network.BackPackPackets;
 import net.fxnt.fxntstorage.network.InventoryPackets;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,6 +26,7 @@ public class FXNTStorage implements ModInitializer {
     public static final String MOD_ID = "fxntstorage";
     public static final String NAME = "FXNT Storage";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
 
     @Override
     public void onInitialize() {
@@ -38,6 +41,8 @@ public class FXNTStorage implements ModInitializer {
         InventoryPackets.register();
         BackPackPackets.register();
         ModMenuTypes.register();
+
+        REGISTRATE.register();
 
         LOGGER.info("Create addon mod [{}] is loading alongside Create [{}]!", NAME, Create.VERSION);
         LOGGER.info(EnvExecutor.unsafeRunForDist(
@@ -59,5 +64,12 @@ public class FXNTStorage implements ModInitializer {
             return InteractionResult.PASS;
         });
 
+    }
+    public static ResourceLocation asResource(String path) {
+        return new ResourceLocation(MOD_ID, path);
+    }
+
+    public static CreateRegistrate registrate() {
+        return REGISTRATE;
     }
 }

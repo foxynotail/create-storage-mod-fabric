@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "storage_box",
+  "key": {
+    "W": {
+      "item": "minecraft:warped_planks"
+    },
+    "A": {
+      "item": "create:andesite_alloy"
+    },
+    "V": {
+      "item": "create:item_vault"
+    },
+    "D": {
+      "item": "create:display_board"
+    }
+  },
+  "pattern": [
+    "AWA",
+    "WVW",
+    "ADA"
+  ],
+  "result": {
+    "item": "fxntstorage:simple_storage_box_warped"
+  },
+  "show_notification": true
+}

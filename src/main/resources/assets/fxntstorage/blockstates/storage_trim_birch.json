@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "fxntstorage:block/storage_trim/storage_trim_birch"
+    }
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "parent": "fxntstorage:block/storage_box/storage_box_base",
-  "textures": {
-    "casing": "minecraft:block/oak_planks",
-    "particle": "minecraft:block/oak_planks"
-  }
-}

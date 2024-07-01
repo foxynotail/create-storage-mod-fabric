@@ -24,6 +24,16 @@ public class ModGroups {
                         entries.accept(ModBlocks.BRASS_STORAGE_BOX);
                         entries.accept(ModBlocks.HARDENED_STORAGE_BOX);
                         entries.accept(ModBlocks.SIMPLE_STORAGE_BOX);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_SPRUCE);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_BIRCH);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_JUNGLE);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_ACACIA);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_DARK_OAK);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_MANGROVE);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_CHERRY);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_BAMBOO);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_CRIMSON);
+                        entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_WARPED);
                         entries.accept(ModItems.STORAGE_BOX_VOID_UPGRADE);
                         entries.accept(ModItems.STORAGE_BOX_CAPACITY_UPGRADE);
                         entries.accept(ModBlocks.BACK_PACK);
@@ -42,6 +52,17 @@ public class ModGroups {
                         entries.accept(ModItems.BACK_PACK_FEEDER_UPGRADE);
                         entries.accept(ModItems.BACK_PACK_TOOLSWAP_UPGRADE);
                         entries.accept(ModItems.BACK_PACK_FALLDAMAGE_UPGRADE);
+                        entries.accept(ModBlocks.STORAGE_TRIM);
+                        entries.accept(ModBlocks.STORAGE_TRIM_SPRUCE);
+                        entries.accept(ModBlocks.STORAGE_TRIM_BIRCH);
+                        entries.accept(ModBlocks.STORAGE_TRIM_JUNGLE);
+                        entries.accept(ModBlocks.STORAGE_TRIM_ACACIA);
+                        entries.accept(ModBlocks.STORAGE_TRIM_DARK_OAK);
+                        entries.accept(ModBlocks.STORAGE_TRIM_MANGROVE);
+                        entries.accept(ModBlocks.STORAGE_TRIM_CHERRY);
+                        entries.accept(ModBlocks.STORAGE_TRIM_BAMBOO);
+                        entries.accept(ModBlocks.STORAGE_TRIM_CRIMSON);
+                        entries.accept(ModBlocks.STORAGE_TRIM_WARPED);
 
                     }).build());
     public static void register(){

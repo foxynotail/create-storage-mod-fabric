@@ -5,7 +5,7 @@
         "facing": "north"
       },
       "apply": {
-        "model": "fxntstorage:block/storage_box/simple_storage_box_base"
+        "model": "fxntstorage:block/simple_storage_box/simple_storage_box_base"
       }
     },
     {
@@ -13,7 +13,7 @@
         "facing": "east"
       },
       "apply": {
-        "model": "fxntstorage:block/storage_box/simple_storage_box_base",
+        "model": "fxntstorage:block/simple_storage_box/simple_storage_box_base",
         "y": 90
       }
     },
@@ -22,7 +22,7 @@
         "facing": "south"
       },
       "apply": {
-        "model": "fxntstorage:block/storage_box/simple_storage_box_base",
+        "model": "fxntstorage:block/simple_storage_box/simple_storage_box_base",
         "y": 180
       }
     },
@@ -31,7 +31,7 @@
         "facing": "west"
       },
       "apply": {
-        "model": "fxntstorage:block/storage_box/simple_storage_box_base",
+        "model": "fxntstorage:block/simple_storage_box/simple_storage_box_base",
         "y": 270
       }
     },

@@ -3,8 +3,11 @@
   "category": "misc",
   "group": "storage_box",
   "key": {
-    "C": {
-      "item": "minecraft:oak_planks"
+    "W": {
+      "item": "minecraft:cherry_planks"
+    },
+    "A": {
+      "item": "create:andesite_alloy"
     },
     "V": {
       "item": "create:item_vault"
@@ -14,12 +17,12 @@
     }
   },
   "pattern": [
-    "CCC",
-    "CVC",
-    "CDC"
+    "AWA",
+    "WVW",
+    "ADA"
   ],
   "result": {
-    "item": "fxntstorage:simple_storage_box"
+    "item": "fxntstorage:simple_storage_box_cherry"
   },
   "show_notification": true
 }
