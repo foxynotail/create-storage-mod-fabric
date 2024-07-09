@@ -38,6 +38,7 @@ This mod features a handful of Storage Boxes, each with different sized inventor
 - Basic blocks with connected textures that match the Simple Storage Box variations
 - Connects simple storage boxes with controllers and interface blocks
 
+# Storage Networks
 ## Simple Storage Controller
 - Used as a master input and output for a Simple Storage Network
 - Creates a Storage Network when placed from Simple Storage Boxes connected by Storage Trim 
