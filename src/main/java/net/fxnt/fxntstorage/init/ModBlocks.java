@@ -13,6 +13,10 @@ import net.fxnt.fxntstorage.backpacks.main.BackPackEntity;
 import net.fxnt.fxntstorage.backpacks.main.BackPackItem;
 import net.fxnt.fxntstorage.containers.StorageBox;
 import net.fxnt.fxntstorage.containers.StorageBoxEntity;
+import net.fxnt.fxntstorage.controller.StorageControllerBlock;
+import net.fxnt.fxntstorage.controller.StorageControllerEntity;
+import net.fxnt.fxntstorage.controller.StorageInterfaceBlock;
+import net.fxnt.fxntstorage.controller.StorageInterfaceEntity;
 import net.fxnt.fxntstorage.passer.PasserBlock;
 import net.fxnt.fxntstorage.passer.PasserEntity;
 import net.fxnt.fxntstorage.passer.PasserSmartEntity;
@@ -155,6 +159,12 @@ public class ModBlocks {
             .transform(BuilderTransformers.casing(() -> SpriteShifts.WARPED_CASING))
             .register();
 
+    // CONTROLLER
+    public static final Block STORAGE_CONTROLLER = registerBlock("storage_controller",
+            new StorageControllerBlock(FabricBlockSettings.create()), true);
+    public static final Block STORAGE_INTERFACE = registerBlock("storage_interface",
+            new StorageInterfaceBlock(FabricBlockSettings.create()), true);
+
     // ITEMS
     public static final Item BACK_PACK_ITEM = registerBlockItem("back_pack",
             new BackPackItem(BACK_PACK, new FabricItemSettings()));
@@ -180,6 +190,10 @@ public class ModBlocks {
             registerBlockEntity("passer_entity", BlockEntityType.Builder.of(PasserEntity::new, PASSER_BLOCK));
     public static final BlockEntityType<PasserSmartEntity> SMART_PASSER_ENTITY =
             registerBlockEntity("smart_passer_entity", BlockEntityType.Builder.of(PasserSmartEntity::new, SMART_PASSER_BLOCK));
+    public static final BlockEntityType<StorageControllerEntity> STORAGE_CONTROLLER_ENTITY =
+            registerBlockEntity("storage_controller_entity", BlockEntityType.Builder.of(StorageControllerEntity::new, STORAGE_CONTROLLER));
+    public static final BlockEntityType<StorageInterfaceEntity> STORAGE_INTERFACE_ENTITY =
+            registerBlockEntity("storage_interface_entity", BlockEntityType.Builder.of(StorageInterfaceEntity::new, STORAGE_INTERFACE));
 
 
     private static Block registerBlock(String name, Block block, boolean autoRegisterItem) {

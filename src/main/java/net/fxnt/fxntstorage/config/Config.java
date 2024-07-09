@@ -14,6 +14,8 @@ public class Config {
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
     public static ForgeConfigSpec COMMON_CONFIG;
     public static ForgeConfigSpec.ConfigValue<Integer> STORAGE_BOX_UPDATE_TIME;
+    public static ForgeConfigSpec.ConfigValue<Integer> SIMPLE_STORAGE_NETWORK_RANGE;
+    public static ForgeConfigSpec.ConfigValue<Integer> SIMPLE_STORAGE_NETWORK_UPDATE_TIME;
     public static ForgeConfigSpec.ConfigValue<Integer> BACKPACK_MAGNET_RANGE;
     public static ForgeConfigSpec.ConfigValue<Double> JETPACK_FUEL_DEPLETION_AMOUNT;
 
@@ -25,8 +27,16 @@ public class Config {
         COMMON_BUILDER.comment("Storage Box Settings").push(STORAGE_BOX_CATEGORY);
 
         STORAGE_BOX_UPDATE_TIME = COMMON_BUILDER
-                .comment("Sets how many ticks pass before Storage Boxes Update their block count and Block States. More = better performance")
+                .comment("How many ticks pass before Storage Boxes Update their block count and Block States. More = better performance")
                 .define("storage_box_update_time", 10);
+
+        SIMPLE_STORAGE_NETWORK_RANGE = COMMON_BUILDER
+                .comment("How many blocks away from a controller will be checked as part of the storage network")
+                .defineInRange("simple_storage_network_range", 32, 8, 64);
+
+        SIMPLE_STORAGE_NETWORK_UPDATE_TIME = COMMON_BUILDER
+                .comment("How many ticks pass before Storage Controllers & Interfaces update their connection to the Storage Network")
+                .define("storage_box_update_time", 20);
 
         BACKPACK_MAGNET_RANGE = COMMON_BUILDER
                 .comment("BackPack Magnet Range (In Blocks)")

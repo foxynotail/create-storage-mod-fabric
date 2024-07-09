@@ -55,6 +55,12 @@
   "block.fxntstorage.simple_storage_box_warped": "Simple Warped Storage Box",
   "container.fxntstorage.simple_storage_box_warped": "Simple Warped Storage Box",
 
+  "block.fxntstorage.storage_controller": "Simple Storage Controller",
+  "container.fxntstorage.storage_controller": "Simple Storage Controller",
+
+  "block.fxntstorage.storage_interface": "Simple Storage Interface",
+  "container.fxntstorage.storage_interface": "Simple Storage Interface",
+
   "block.fxntstorage.passer_block": "Passer",
   "block.fxntstorage.smart_passer_block": "Smart Passer",
 

@@ -23,6 +23,8 @@ public class ModGroups {
                         entries.accept(ModBlocks.COPPER_STORAGE_BOX);
                         entries.accept(ModBlocks.BRASS_STORAGE_BOX);
                         entries.accept(ModBlocks.HARDENED_STORAGE_BOX);
+                        entries.accept(ModBlocks.STORAGE_CONTROLLER);
+                        entries.accept(ModBlocks.STORAGE_INTERFACE);
                         entries.accept(ModBlocks.SIMPLE_STORAGE_BOX);
                         entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_SPRUCE);
                         entries.accept(ModBlocks.SIMPLE_STORAGE_BOX_BIRCH);

@@ -329,19 +329,16 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
     @Override
     public boolean canPlaceItem(int index, @NotNull ItemStack itemStack) {
 
-        ItemStack slot0 = this.getItem(0);
-
         // Check filter
         if (!this.filterTest(itemStack)) return false;
 
         // Check against existing items
+        //ItemStack slot0 = this.getItem(0);
         //if (!slot0.isEmpty() && !ItemStack.isSameItemSameTags(itemStack, slot0)) return false;
 
         // Check space in slot 0
         int freeSpace = this.getMaxItemCapacity() - this.getStoredAmount();
-        if (freeSpace <= 0 && !this.hasVoidUpgrade()) return false;
-
-        return true;
+        return freeSpace > 0 || this.hasVoidUpgrade();
     }
 
     public void transferItemsToPlayer(Player player) {
@@ -400,6 +397,67 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
         }
 
         helper.transferItemsFromPlayer(player);
+    }
+
+    public ItemStack insertItems(ItemStack itemStack) {
+        if (this.filterTest(itemStack)) {
+            int availableSpace = this.getMaxItemCapacity() - this.getStoredAmount();
+            int srcAmount = itemStack.getCount();
+            int moveAmount = Math.min(srcAmount, availableSpace);
+
+            if (availableSpace <= 0 && hasVoidUpgrade()) {
+                itemStack.setCount(0);
+                return itemStack;
+            }
+
+            if (moveAmount > 0) {
+
+                if (this.getFilterItem().isEmpty()) {
+                    setFilter(itemStack);
+                }
+
+                if (this.getItem(1).isEmpty()) {
+                    this.setItem(1, itemStack.copyWithCount(moveAmount));
+                } else {
+                    this.getItem(1).grow(moveAmount);
+                }
+                this.setChanged();
+                itemStack.shrink(moveAmount);
+            }
+        }
+        return itemStack;
+    }
+
+    private void clearItems() {
+        // Don't clear upgrades!
+        this.items.set(0, ItemStack.EMPTY);
+        this.items.set(1, ItemStack.EMPTY);
+        this.items.set(2, ItemStack.EMPTY);
+    }
+
+    public void controllerSetItems(ItemStack itemStack) {
+        // Resetting the amount stored in this box from a storage controller
+        // Wipe anything in slot 0 and 1 and then add as normal
+        this.clearItems();
+        this.insertItems(itemStack);
+        this.setChanged();
+    }
+
+    public ItemStack controllerRemoveItems(int amount) {
+        if (amount <= this.storedAmount) {
+            int newAmount = this.storedAmount - amount;
+            ItemStack newStack = this.filterItem.copyWithCount(newAmount);
+            this.clearItems();
+            this.insertItems(newStack);
+            this.setChanged();
+            return newStack.copyWithCount(amount);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public ItemStack controllerRemoveItemsNoUpdate() {
+        this.clearItems();
+        return ItemStack.EMPTY;
     }
 
     public void removeFilter() {

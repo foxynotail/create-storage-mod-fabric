@@ -17,6 +17,8 @@
     "fxntstorage:simple_storage_box_bamboo",
     "fxntstorage:simple_storage_box_crimson",
     "fxntstorage:simple_storage_box_warped",
+    "fxntstorage:storage_controller",
+    "fxntstorage:storage_interface",
     "fxntstorage:back_pack",
     "fxntstorage:andesite_back_pack",
     "fxntstorage:copper_back_pack",

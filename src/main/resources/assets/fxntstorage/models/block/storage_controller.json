@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "fxntstorage:block/storage_controller_top",
+    "up": "fxntstorage:block/storage_controller_top",
+    "north": "fxntstorage:block/storage_controller_front",
+    "south": "fxntstorage:block/storage_controller_side",
+    "east": "fxntstorage:block/storage_controller_side",
+    "west": "fxntstorage:block/storage_controller_side",
+    "particle": "fxntstorage:block/storage_controller_side"
+  }
+}

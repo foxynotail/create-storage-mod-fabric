@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "storage_box",
+  "key": {
+    "X": {
+      "item": "create:redstone_link"
+    },
+    "Y": {
+      "item": "create:brass_casing"
+    }
+  },
+  "pattern": [
+    "X",
+    "Y"
+  ],
+  "result": {
+    "item": "fxntstorage:storage_interface"
+  },
+  "show_notification": true
+}

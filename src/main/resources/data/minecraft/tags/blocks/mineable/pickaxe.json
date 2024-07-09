@@ -29,6 +29,8 @@
     "fxntstorage:storage_trim_cherry",
     "fxntstorage:storage_trim_bamboo",
     "fxntstorage:storage_trim_crimson",
-    "fxntstorage:storage_trim_warped"
+    "fxntstorage:storage_trim_warped",
+    "fxntstorage:storage_controller",
+    "fxntstorage:storage_interface"
   ]
 }
