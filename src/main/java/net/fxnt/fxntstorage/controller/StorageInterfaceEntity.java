@@ -1,6 +1,5 @@
 package net.fxnt.fxntstorage.controller;
 
-import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.config.Config;
 import net.fxnt.fxntstorage.containers.util.ContainerSaveContents;
 import net.fxnt.fxntstorage.init.ModBlocks;
@@ -37,14 +36,12 @@ public class StorageInterfaceEntity extends BlockEntity implements WorldlyContai
     public void setController(StorageControllerEntity controller) {
         // Check if already has controller to prevent switching networks constantly
         if (!checkController()) {
-            FXNTStorage.LOGGER.info("Set Controller: {}", controller.getBlockPos());
             this.controller = controller;
             getStorageNetwork();
         }
     }
 
     public void getStorageNetwork() {
-        FXNTStorage.LOGGER.info("Get Network");
         this.storageNetwork = this.controller.storageNetwork;
         this.slotCount = this.controller.items.size();
         this.items = this.controller.items;
@@ -64,7 +61,6 @@ public class StorageInterfaceEntity extends BlockEntity implements WorldlyContai
     }
 
     private void forgetController() {
-        FXNTStorage.LOGGER.info("Forget Controller");
         this.controller = null;
         this.storageNetwork = null;
         this.slotCount = 0;
@@ -96,9 +92,6 @@ public class StorageInterfaceEntity extends BlockEntity implements WorldlyContai
             getStorageNetwork();
         }
         this.doTick = false;
-
-
-
     }
 
     @Override
