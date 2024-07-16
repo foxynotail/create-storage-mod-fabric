@@ -6,6 +6,7 @@
   "key.fxntstorage.open_backpack": "Open Backpack",
   "key.fxntstorage.clear_backpack_shape_cache": "Clear Backpack Shape Cache",
   "key.fxntstorage.backpack_hover": "Toggle Backpack Flight Hover Mode",
+  "key.fxntstorage.toggle_upgrade": "Toggle Upgrade",
 
   "block.fxntstorage.storage_box": "Industrial Iron Storage Box",
   "container.fxntstorage.industrial_iron_storage_box": "Industrial Iron Storage Box",

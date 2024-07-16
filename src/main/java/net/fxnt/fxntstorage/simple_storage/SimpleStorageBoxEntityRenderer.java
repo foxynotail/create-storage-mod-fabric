@@ -1,6 +1,7 @@
 package net.fxnt.fxntstorage.simple_storage;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import net.fxnt.fxntstorage.init.ModItems;
 import net.fxnt.fxntstorage.util.Util;
@@ -120,8 +121,11 @@ public class SimpleStorageBoxEntityRenderer extends SmartBlockEntityRenderer<Sim
         BakedModel modelWithOverrides = itemRenderer.getModel(filter, null, null, 0);
         boolean flatItem = !modelWithOverrides.isGui3d();
 
-        zOffset += flatItem ? 0 : -0.05f;
+        zOffset += flatItem ? 0 : 0f;
         poseStack.translate(0.5f, 0.175f, zOffset);
+        if (!flatItem) {
+            poseStack.mulPose(Axis.YP.rotationDegrees(180));
+        }
 
         float scale = (flatItem ? 0.25f : 0.5f) + 1 / 64f;
         poseStack.scale(scale, scale, scale);

@@ -365,6 +365,7 @@ public class BackPackScreen extends AbstractContainerScreen<BackPackMenu> {
     public final boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_LEFT_CONTROL) {
             ctrlKeyDown = true;
+            BackPackNetworkHelper.sendCtrlKeyDown();
         }
         if(this.handleKeyPress(keyCode, scanCode, modifiers)) {
             return true;
@@ -376,6 +377,7 @@ public class BackPackScreen extends AbstractContainerScreen<BackPackMenu> {
     public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_LEFT_CONTROL) {
             ctrlKeyDown = false;
+            BackPackNetworkHelper.sendCtrlKeyUp();
         }
         return super.keyReleased(keyCode, scanCode, modifiers);
     }
@@ -460,14 +462,15 @@ public class BackPackScreen extends AbstractContainerScreen<BackPackMenu> {
 
     @Override
     protected void slotClicked(Slot slot, int slotId, int mouseButton, ClickType type) {
+        /*
         if (slotId >= Util.UPGRADE_SLOT_START_RANGE && slotId < Util.UPGRADE_SLOT_END_RANGE) {
             if(slot.getItem().is(ModTags.BACK_PACK_UPGRADE) && slot.getItem().getItem() instanceof UpgradeItem upgradeItem) {
+                String itemName = upgradeItem.getUpgradeName();
+                String baseItemName = itemName
+                        .replace("back_pack_", "")
+                        .replace("_upgrade", "")
+                        .replace("_deactivated", "");
                 if (ctrlKeyDown) {
-                    String itemName = upgradeItem.getUpgradeName();
-                    String baseItemName = itemName
-                            .replace("back_pack_", "")
-                            .replace("_upgrade", "")
-                            .replace("_deactivated", "");
                     ItemStack itemStack = menu.slots.get(slotId).getItem();
                     if (!itemStack.isEmpty()) {
                         if (itemName.contains("_deactivated")) {
@@ -496,18 +499,16 @@ public class BackPackScreen extends AbstractContainerScreen<BackPackMenu> {
                             };
                         }
                         if (!itemStack.isEmpty()) {
-                            BackPackNetworkHelper.sendToServer(slotId, itemStack.copyWithCount(slot.getItem().getCount()), menu.backPackType, menu.blockPos);
+                            //menu.slots.get(slotId).set(itemStack.copyWithCount(slot.getItem().getCount()));
+                            menu.container.setItem(slotId, itemStack.copyWithCount(slot.getItem().getCount()));
+                            menu.container.setChanged();
+                            //BackPackNetworkHelper.sendToServer(slotId, itemStack.copyWithCount(slot.getItem().getCount()), menu.backPackType, menu.blockPos);
                         }
                         return;
                     }
                 } else {
                     // If try to pickup deactivated item, then toggle back to activated version
-                    String itemName = upgradeItem.getUpgradeName();
                     if (itemName.contains("_deactivated")) {
-                        String baseItemName = itemName
-                                .replace("back_pack_", "")
-                                .replace("_upgrade", "")
-                                .replace("_deactivated", "");
                         ItemStack itemStack = switch (baseItemName) {
                             case "magnet" -> new ItemStack(ModItems.BACK_PACK_MAGNET_UPGRADE);
                             case "pickblock" -> new ItemStack(ModItems.BACK_PACK_PICKBLOCK_UPGRADE);
@@ -519,11 +520,15 @@ public class BackPackScreen extends AbstractContainerScreen<BackPackMenu> {
                             case "falldamage" -> new ItemStack(ModItems.BACK_PACK_FALLDAMAGE_UPGRADE);
                             default -> ItemStack.EMPTY;
                         };
-                        BackPackNetworkHelper.sendToServer(slotId, itemStack.copyWithCount(slot.getItem().getCount()), menu.backPackType, menu.blockPos);
+                        //menu.slots.get(slotId).set(itemStack.copyWithCount(slot.getItem().getCount()));
+                        menu.container.setItem(slotId, itemStack.copyWithCount(slot.getItem().getCount()));
+                        menu.container.setChanged();
+                        //BackPackNetworkHelper.sendToServer(slotId, itemStack.copyWithCount(slot.getItem().getCount()), menu.backPackType, menu.blockPos);
                     }
                 }
             }
         }
+        */
         super.slotClicked(slot, slotId, mouseButton, type);
     }
 

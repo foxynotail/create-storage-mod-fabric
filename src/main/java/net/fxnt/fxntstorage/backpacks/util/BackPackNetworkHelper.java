@@ -16,6 +16,8 @@ import java.util.List;
 
 public class BackPackNetworkHelper {
     public static final ResourceLocation UPDATE_BACKPACK = new ResourceLocation(FXNTStorage.MOD_ID, "update_backpack");
+    public static final ResourceLocation BACKPACK_MENU_CTRL_DOWN = new ResourceLocation(FXNTStorage.MOD_ID, "backpack_menu_ctrl_down");
+    public static final ResourceLocation BACKPACK_MENU_CTRL_UP = new ResourceLocation(FXNTStorage.MOD_ID, "backpack_menu_ctrl_up");
     public static final ResourceLocation BACKPACK_CLIENT_KEY = new ResourceLocation(FXNTStorage.MOD_ID, "backpack_client_key");
     public static final ResourceLocation UPGRADE_PICK_BLOCK = new ResourceLocation(FXNTStorage.MOD_ID, "upgrade_pick_block");
     public static final ResourceLocation JETPACK_FUEL_REQUEST = new ResourceLocation(FXNTStorage.MOD_ID, "jetpack_fuel_request");
@@ -32,6 +34,15 @@ public class BackPackNetworkHelper {
         buf.writeByte(backPackType);
         buf.writeBlockPos(blockPos);
         ClientPlayNetworking.send(UPDATE_BACKPACK, buf);
+    }
+
+    public static void sendCtrlKeyDown() {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        ClientPlayNetworking.send(BACKPACK_MENU_CTRL_DOWN, buf);
+    }
+    public static void sendCtrlKeyUp() {
+        FriendlyByteBuf buf = PacketByteBufs.create();
+        ClientPlayNetworking.send(BACKPACK_MENU_CTRL_UP, buf);
     }
 
     public static void sendKeyToServer(byte key) {

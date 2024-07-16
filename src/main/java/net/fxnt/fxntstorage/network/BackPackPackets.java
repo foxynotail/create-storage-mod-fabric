@@ -26,6 +26,8 @@ import net.minecraft.world.item.ItemStack;
 
 public class BackPackPackets {
     public static final ResourceLocation UPDATE_BACKPACK = new ResourceLocation(FXNTStorage.MOD_ID, "update_backpack");
+    public static final ResourceLocation BACKPACK_MENU_CTRL_DOWN = new ResourceLocation(FXNTStorage.MOD_ID, "backpack_menu_ctrl_down");
+    public static final ResourceLocation BACKPACK_MENU_CTRL_UP = new ResourceLocation(FXNTStorage.MOD_ID, "backpack_menu_ctrl_up");
     public static final ResourceLocation BACKPACK_CLIENT_KEY = new ResourceLocation(FXNTStorage.MOD_ID, "backpack_client_key");
     public static final ResourceLocation UPGRADE_PICK_BLOCK = new ResourceLocation(FXNTStorage.MOD_ID, "upgrade_pick_block");
     public static final ResourceLocation JETPACK_FUEL_REQUEST = new ResourceLocation(FXNTStorage.MOD_ID, "jetpack_fuel_request");
@@ -44,19 +46,17 @@ public class BackPackPackets {
                     BlockPos blockPos = buf.readBlockPos();
 
                     server.execute(() -> {
-                        //FXNTStorage.LOGGER.info("Server Handle {}", backPackType);
+                        FXNTStorage.LOGGER.info("Server Handle {}", backPackType);
                         Container container;
                         switch (backPackType) {
                             case Util.BACKPACK_ON_BACK: {
                                 ItemStack backPackStack = new BackPackHelper().getWornBackPackStack(player);
                                 container = new BackPackContainer(backPackStack);
-                                //container = BackPackContainerFactory.getInstance().getContainer((ServerPlayer)player, backPackStack);
                                 break;
                             }
                             case Util.BACKPACK_IN_HAND: {
                                 ItemStack backPackStack = player.getItemInHand(InteractionHand.MAIN_HAND);
                                 container = new BackPackContainer(backPackStack);
-                                //container = BackPackContainerFactory.getInstance().getContainer((ServerPlayer)player,backPackStack);
                                 break;
                             }
                             case Util.BACKPACK_AS_BLOCK: {
@@ -66,6 +66,28 @@ public class BackPackPackets {
                             default: throw new RuntimeException("Backpack Type is wrong");
                         }
                         container.setItem(slot, itemStack);
+                    });
+                }
+        );
+
+        ServerPlayNetworking.registerGlobalReceiver(BACKPACK_MENU_CTRL_DOWN,
+                (server, player, handler, buf, responseSender) -> {
+                    server.execute(() -> {
+                        if (player.containerMenu instanceof BackPackMenu backPackMenu) {
+                            FXNTStorage.LOGGER.info("CTRL KEY DOWN");
+                            backPackMenu.ctrlKeyDown = true;
+                        }
+                    });
+                }
+        );
+
+        ServerPlayNetworking.registerGlobalReceiver(BACKPACK_MENU_CTRL_UP,
+                (server, player, handler, buf, responseSender) -> {
+                    server.execute(() -> {
+                        if (player.containerMenu instanceof BackPackMenu backPackMenu) {
+                            FXNTStorage.LOGGER.info("CTRL KEY UP");
+                            backPackMenu.ctrlKeyDown = false;
+                        }
                     });
                 }
         );

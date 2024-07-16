@@ -28,11 +28,15 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
     public int lastTick = 0;
     public int updateEveryXTicks = Config.SIMPLE_STORAGE_NETWORK_UPDATE_TIME.get();
     public boolean doTick = false;
-    public float lastInteractTime = 0;
+    public long lastInteractTime = 0;
     public UUID lastInteractPlayer = UUID.randomUUID();
     public byte lastInteractType = -1;
     public int interactWindow = 600;
     public StorageNetwork storageNetwork;
+    public int networkVersion;
+    public int lastNetworkVersion;
+    boolean networkUpdating = false;
+    boolean networkChanged = false;
     public int slotCount = 0;
     public NonNullList<ItemStack> items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
     private int blankSlot = 0;
@@ -44,14 +48,30 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
     }
 
     public void updateStorageNetwork() {
+        this.networkUpdating = true;
         // Save copy of items before updating (might be an issue if slots change order on update)
-        this.storageNetwork = new StorageNetwork(this);
-        this.slotCount = storageNetwork.items.size()+1;
-        this.items = storageNetwork.items;
+        if (this.storageNetwork == null) {
+            this.storageNetwork = new StorageNetwork(this);
+        } else {
+            this.lastNetworkVersion = this.storageNetwork.networkVersion;
+            this.storageNetwork.updateStorageNetwork();
+        }
+        this.networkVersion = this.storageNetwork.networkVersion;
+        this.slotCount = this.storageNetwork.items.size()+1;
+        this.items = this.storageNetwork.items;
         this.items.add(ItemStack.EMPTY);
         // Blank Slot used for inserting new items
         this.blankSlot = this.items.size() - 1;
         this.maxItemCapacity = this.storageNetwork.maxItemCapacity;
+
+        if (this.networkVersion != this.lastNetworkVersion) {
+            this.networkChanged = true;
+        }
+        this.networkUpdating = false;
+    }
+
+    public boolean networkBusy() {
+        return this.networkUpdating || this.networkChanged;
     }
 
     @Override
@@ -87,6 +107,7 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
     public <T extends BlockEntity> void serverTick(Level level, BlockPos blockPos, BlockEntity blockEntity) {
 
         if (level.isClientSide) return;
+        moveItems();
 
         this.lastTick++;
 
@@ -97,12 +118,17 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
         if (!this.doTick) return;
 
         updateStorageNetwork();
+        // If the network has changed, reset it here
+        if (this.networkChanged) this.networkChanged = false;
         this.doTick = false;
 
     }
 
     private void moveItems() {
+        if (networkBusy()) return;
         // Move any items in slot 0 to proper slot
+        if (this.items.size() <= 0) return;
+        if (this.blankSlot > this.items.size() - 1) return;
         ItemStack insertSlot = this.items.get(this.blankSlot);
         if (insertSlot.isEmpty()) return;
         this.storageNetwork.insertItems(insertSlot);
@@ -111,31 +137,24 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
     }
 
     @Override
-    public void setChanged() {
-        // To make life easy, set the last slot as the hidden slot to insert items into
-        // That way when inserting, insert into this.blankSlot and move into the most appropriate real slot
-        // When extracting, don't extract from this.blankSlot
-        moveItems();
-        super.setChanged();
-    }
-
-    @Override
     public int @NotNull [] getSlotsForFace(Direction side) {
         int[] slots = new int[this.slotCount];
         for (int i = 0; i < this.slotCount; i++) {
             slots[i] = i;
         }
+
+        if (networkBusy()) return new int[]{};
         return slots;
     }
 
     @Override
     public ItemStack getItem(int slot) {
+        if (slot > this.items.size() - 1) return ItemStack.EMPTY;
         return this.items.get(slot);
     }
 
     @Override
     public boolean canPlaceItem(int index, ItemStack itemStack) {
-        //FXNTStorage.LOGGER.info("Can Place Item: {} {} {}", index, itemStack, this.storageNetwork.canInsertItems(itemStack));
         return index == this.blankSlot && this.storageNetwork.canInsertItems(itemStack);
     }
 
@@ -159,7 +178,14 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
             return;
         }
 
-        SimpleStorageBoxEntity simpleStorageBoxEntity = getSimpleStorageBoxBySlot(slot);
+        if (networkBusy()) {
+            return;
+        }
+
+        StorageNetwork.StorageNetworkItem networkItem = this.storageNetwork.boxes.get(slot);
+        SimpleStorageBoxEntity simpleStorageBoxEntity = networkItem.simpleStorageBoxEntity;
+        if (simpleStorageBoxEntity == null) return;
+
         simpleStorageBoxEntity.controllerSetItems(stack);
 
         // Refresh the network to reflect the items here
@@ -168,6 +194,10 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
 
     @Override
     public ItemStack removeItem(int slot, int amount) {
+
+        if (networkBusy()) {
+            return ItemStack.EMPTY;
+        }
 
         ItemStack slotItem = this.items.get(slot);
         int amountAvailable = slotItem.getCount();
@@ -191,7 +221,17 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
             this.setChanged();
             return ItemStack.EMPTY;
         }
-        return getSimpleStorageBoxBySlot(slot).controllerRemoveItemsNoUpdate();
+
+        if (networkBusy()) {
+            return ItemStack.EMPTY;
+        }
+
+        StorageNetwork.StorageNetworkItem networkItem = this.storageNetwork.boxes.get(slot);
+        SimpleStorageBoxEntity simpleStorageBoxEntity = networkItem.simpleStorageBoxEntity;
+        if (simpleStorageBoxEntity != null) {
+            return simpleStorageBoxEntity.controllerRemoveItemsNoUpdate();
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -199,9 +239,9 @@ public class StorageControllerEntity extends BlockEntity implements WorldlyConta
         updateStorageNetwork();
     }
 
-    private SimpleStorageBoxEntity getSimpleStorageBoxBySlot(int slot) {
-        return this.storageNetwork.boxes.get(slot);
-    }
+    //private SimpleStorageBoxEntity getSimpleStorageBoxBySlot(int slot) {
+    //    return this.storageNetwork.boxes.get(slot);
+    //}
 
     public void transferItemsToPlayer(Player player) {
 

@@ -100,7 +100,6 @@ public class SimpleStorageBoxMenu extends AbstractContainerMenu {
                         capacityCheck *= 2;
                     }
                     capacityCheck = capacityCheck * stackSize;
-                    FXNTStorage.LOGGER.info("Click: Capacity Check {} | Capacity {} | Amount {}", capacityCheck, this.simpleStorageBoxEntity.getMaxItemCapacity(), storedAmount);
                     if (capacityCheck < storedAmount) {
                         return;
                     }

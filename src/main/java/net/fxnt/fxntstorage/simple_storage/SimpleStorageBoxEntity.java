@@ -3,6 +3,10 @@ package net.fxnt.fxntstorage.simple_storage;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.containers.util.ContainerSaveContents;
 import net.fxnt.fxntstorage.init.ModBlocks;
@@ -18,6 +22,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -69,8 +74,10 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
         return this.getMaxItemCapacity();
     }
 
+    @Override
     public int getContainerSize() {
-        return slotCount;
+        // Return a higher count than actually have to enable Fabric Transfer API (particularly threshold switches) to determine capacity
+        return this.getMaxItemCapacity() / this.filterItem.getMaxStackSize();
     }
 
     public int getCapacityUpgrades() {
@@ -100,6 +107,16 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
 
     public ItemStack getFilterItem() {
         return this.filterItem;
+    }
+
+    @Override
+    public @NotNull ItemStack getItem(int slot) {
+        // Prevent errors accessing slots that are within the FakeSlotCount range
+        if (slot > this.slotCount - 1) {
+            // Pass empty slot if slot out of bounds
+            return ItemStack.EMPTY;
+        }
+        return ContainerSaveContents.super.getItem(slot);
     }
 
     public void calculateMaxCapacity() {
@@ -143,7 +160,7 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
     @Override
     public void saveInventoryToTag(CompoundTag tag) {
         ListTag listTag = new ListTag();
-        for (int i = 0; i < slotCount; i++) {
+        for (int i = 0; i < this.slotCount; i++) {
             CompoundTag compoundTag = new CompoundTag();
             compoundTag.putByte("Slot", (byte) i);
             ItemStack itemStack = this.getItem(i);
@@ -332,17 +349,13 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
         // Check filter
         if (!this.filterTest(itemStack)) return false;
 
-        // Check against existing items
-        //ItemStack slot0 = this.getItem(0);
-        //if (!slot0.isEmpty() && !ItemStack.isSameItemSameTags(itemStack, slot0)) return false;
-
         // Check space in slot 0
         int freeSpace = this.getMaxItemCapacity() - this.getStoredAmount();
         return freeSpace > 0 || this.hasVoidUpgrade();
     }
 
     public void transferItemsToPlayer(Player player) {
-         helper.transferItemsToPlayer(player);
+        helper.transferItemsToPlayer(player);
     }
 
     public void transferItemsFromPlayer(Player player) {
@@ -461,12 +474,10 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
     }
 
     public void removeFilter() {
-        FXNTStorage.LOGGER.info("Remove Filter");
         this.filterItem = ItemStack.EMPTY;
     }
 
     public void setFilter(ItemStack itemStack) {
-        FXNTStorage.LOGGER.info("Set Filter {}", itemStack.copyWithCount(1));
         this.filterItem = itemStack.copyWithCount(1);
     }
 

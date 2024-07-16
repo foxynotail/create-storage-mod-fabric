@@ -1,5 +1,6 @@
 package net.fxnt.fxntstorage.simple_storage;
 
+import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.config.Config;
 import net.fxnt.fxntstorage.containers.StorageBox;
 import net.fxnt.fxntstorage.containers.util.EnumProperties;
@@ -23,7 +24,7 @@ public class SimpleStorageBoxEntityHelper<T extends SimpleStorageBoxEntity> {
     public int lastTick = 0;
     public boolean doTick = false;
     public int updateEveryXTicks = Config.STORAGE_BOX_UPDATE_TIME.get();
-    public float lastInteractTime = 0;
+    public long lastInteractTime = 0;
     public UUID lastInteractPlayer = UUID.randomUUID();
     public byte lastInteractType = -1;
     public int interactWindow = 600;
@@ -73,28 +74,35 @@ public class SimpleStorageBoxEntityHelper<T extends SimpleStorageBoxEntity> {
         }
         if (srcStack.isEmpty()) return;
 
-        int srcAmount = Math.min(instance.getStoredAmount(), srcStack.getMaxStackSize());
-
         if (Util.getMillis() < this.lastInteractTime + this.interactWindow && player.getUUID().equals(this.lastInteractPlayer) && this.lastInteractType == 0) {
-            transferAllItemsToPlayer(player, srcStack, srcAmount);
+            transferAllItemsToPlayer(player, srcStack);
         } else {
             this.lastInteractTime = Util.getMillis();
             this.lastInteractPlayer = player.getUUID();
             this.lastInteractType = 0;
-            if (player.isShiftKeyDown()) srcAmount = 1;
-            doTransferToPlayer(player, srcStack, srcAmount, false);
+            int amountToMove = Math.min(instance.getStoredAmount(), srcStack.getMaxStackSize());
+            if (player.isShiftKeyDown()) amountToMove = 1;
+            doTransferToPlayer(player, srcStack, amountToMove, false);
         }
     }
 
-    public void transferAllItemsToPlayer(Player player, ItemStack srcStack, int srcAmount) {
-
-        while(srcAmount > 0) {
+    public void transferAllItemsToPlayer(Player player, ItemStack srcStack) {
+        int srcAmount = srcStack.getCount();
+        while(srcAmount > 0 && playerHasSpace(player, srcStack)) {
             if (!doTransferToPlayer(player, srcStack, srcAmount, true)) break;
             srcAmount = srcStack.getCount();
         }
     }
 
-    public boolean doTransferToPlayer(Player player, ItemStack srcStack, int srcAmount, boolean transferAll) {
+    private Boolean playerHasSpace(Player player, ItemStack srcStack) {
+        int playerSlot = player.getInventory().getSlotWithRemainingSpace(srcStack);
+        if (playerSlot < 0) {
+            playerSlot = player.getInventory().getFreeSlot();
+        }
+        return playerSlot >= 0;
+    }
+
+    public boolean doTransferToPlayer(Player player, ItemStack srcStack, int amountToMove, boolean transferAll) {
 
         int playerSlot = player.getInventory().selected;
         ItemStack playerStack = player.getItemInHand(InteractionHand.MAIN_HAND);
@@ -107,8 +115,8 @@ public class SimpleStorageBoxEntityHelper<T extends SimpleStorageBoxEntity> {
             }
             if (playerSlot < 0) {
                 if (!transferAll) {
-                    dropItems(instance.getLevel(), srcStack.copyWithCount(srcAmount));
-                    srcStack.shrink(srcAmount);
+                    dropItems(instance.getLevel(), srcStack.copyWithCount(amountToMove));
+                    srcStack.shrink(amountToMove);
                     instance.setChanged();
                 }
                 return false;
@@ -117,7 +125,7 @@ public class SimpleStorageBoxEntityHelper<T extends SimpleStorageBoxEntity> {
             availableSpace = srcStack.getMaxStackSize() - playerStack.getCount();
         }
 
-        int moveAmount = Math.min(availableSpace, srcAmount);
+        int moveAmount = Math.min(availableSpace, amountToMove);
 
         if (moveAmount > 0) {
             if (!playerStack.isEmpty()) {
@@ -136,7 +144,6 @@ public class SimpleStorageBoxEntityHelper<T extends SimpleStorageBoxEntity> {
     public void transferItemsFromPlayer(Player player) {
 
         ItemStack srcStack = player.getItemInHand(InteractionHand.MAIN_HAND);
-        //FXNTStorage.LOGGER.info("Time {}, Player {} {}, Type {} {}, Src {}", Util.getMillis() - (this.lastInteractTime + this.interactWindow), player.getUUID(), this.lastInteractPlayer, 1, this.lastInteractType, srcStack);
         if (Util.getMillis() < this.lastInteractTime + this.interactWindow
                 && player.getUUID().equals(this.lastInteractPlayer)
                 && this.lastInteractType == 1
@@ -168,6 +175,13 @@ public class SimpleStorageBoxEntityHelper<T extends SimpleStorageBoxEntity> {
 
         int availableSpace = instance.getMaxItemCapacity() - instance.getStoredAmount();
         int srcAmount = srcStack.getCount();
+
+        // Take items if full and voiding
+        if (availableSpace <= 0 && instance.hasVoidUpgrade()) {
+            srcStack.shrink(srcAmount);
+            return;
+        }
+
         int moveAmount = Math.min(srcAmount, availableSpace);
 
         if (moveAmount > 0) {

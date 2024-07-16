@@ -4,6 +4,9 @@ import com.google.common.collect.Sets;
 import com.simibubi.create.AllTags;
 import io.github.fabricators_of_create.porting_lib.tags.Tags;
 import io.github.fabricators_of_create.porting_lib.tool.ToolActions;
+import net.fxnt.fxntstorage.FXNTStorage;
+import net.fxnt.fxntstorage.backpacks.upgrades.UpgradeItem;
+import net.fxnt.fxntstorage.init.ModItems;
 import net.fxnt.fxntstorage.init.ModTags;
 import net.fxnt.fxntstorage.network.HighStackCountSync;
 import net.fxnt.fxntstorage.util.Util;
@@ -39,6 +42,7 @@ public class BackPackMenu extends AbstractContainerMenu {
     private final int containerSlotCount = BackPackBlock.getContainerSlotCount();
     private final int toolSlotCount = BackPackBlock.getToolSlotCount();
     private final int upgradeSlotCount = BackPackBlock.getUpgradeSlotCount();
+    public boolean ctrlKeyDown = false;
 
     public BackPackMenu(MenuType<?> type, int containerId, Inventory playerInventory, Container container, byte backPackType) {
         super(type, containerId);
@@ -141,6 +145,10 @@ public class BackPackMenu extends AbstractContainerMenu {
             if (slotId == getSlotsSize() - 36 + 27 + selectedHotBarSlot && selectedStack.getItem() instanceof BackPackItem)
                 return;
         }
+        if (!this.player.level().isClientSide) {
+            if (toggleUpgrade(slotId, ctrlKeyDown)) return;
+        }
+
         try {
             this.doThisClick(slotId, button, clickType, player);
         } catch (Exception var8) {
@@ -671,5 +679,73 @@ public class BackPackMenu extends AbstractContainerMenu {
         } else {
             return bl;
         }
+    }
+
+    public boolean toggleUpgrade(int slotId, boolean ctrlKeyDown) {
+
+        FXNTStorage.LOGGER.info("{} Toggle Upgrade: Ctrl Key Down {}", this.player.level(), ctrlKeyDown);
+        Slot slot = this.slots.get(slotId);
+        if (slotId >= Util.UPGRADE_SLOT_START_RANGE && slotId < Util.UPGRADE_SLOT_END_RANGE) {
+            if(slot.getItem().is(ModTags.BACK_PACK_UPGRADE) && slot.getItem().getItem() instanceof UpgradeItem upgradeItem) {
+                String itemName = upgradeItem.getUpgradeName();
+                String baseItemName = itemName
+                        .replace("back_pack_", "")
+                        .replace("_upgrade", "")
+                        .replace("_deactivated", "");
+                if (ctrlKeyDown) {
+                    ItemStack itemStack = this.slots.get(slotId).getItem();
+                    if (!itemStack.isEmpty()) {
+                        if (itemName.contains("_deactivated")) {
+                            itemStack = switch (baseItemName) {
+                                case "magnet" -> new ItemStack(ModItems.BACK_PACK_MAGNET_UPGRADE);
+                                case "pickblock" -> new ItemStack(ModItems.BACK_PACK_PICKBLOCK_UPGRADE);
+                                case "itempickup" -> new ItemStack(ModItems.BACK_PACK_ITEMPICKUP_UPGRADE);
+                                case "flight" -> new ItemStack(ModItems.BACK_PACK_FLIGHT_UPGRADE);
+                                case "refill" -> new ItemStack(ModItems.BACK_PACK_REFILL_UPGRADE);
+                                case "feeder" -> new ItemStack(ModItems.BACK_PACK_FEEDER_UPGRADE);
+                                case "toolswap" -> new ItemStack(ModItems.BACK_PACK_TOOLSWAP_UPGRADE);
+                                case "falldamage" -> new ItemStack(ModItems.BACK_PACK_FALLDAMAGE_UPGRADE);
+                                default -> ItemStack.EMPTY;
+                            };
+                        } else {
+                            itemStack = switch (baseItemName) {
+                                case "magnet" -> new ItemStack(ModItems.BACK_PACK_MAGNET_UPGRADE_DEACTIVATED);
+                                case "pickblock" -> new ItemStack(ModItems.BACK_PACK_PICKBLOCK_UPGRADE_DEACTIVATED);
+                                case "itempickup" -> new ItemStack(ModItems.BACK_PACK_ITEMPICKUP_UPGRADE_DEACTIVATED);
+                                case "flight" -> new ItemStack(ModItems.BACK_PACK_FLIGHT_UPGRADE_DEACTIVATED);
+                                case "refill" -> new ItemStack(ModItems.BACK_PACK_REFILL_UPGRADE_DEACTIVATED);
+                                case "feeder" -> new ItemStack(ModItems.BACK_PACK_FEEDER_UPGRADE_DEACTIVATED);
+                                case "toolswap" -> new ItemStack(ModItems.BACK_PACK_TOOLSWAP_UPGRADE_DEACTIVATED);
+                                case "falldamage" -> new ItemStack(ModItems.BACK_PACK_FALLDAMAGE_UPGRADE_DEACTIVATED);
+                                default -> ItemStack.EMPTY;
+                            };
+                        }
+                        if (!itemStack.isEmpty()) {
+                            this.slots.get(slotId).set(itemStack.copyWithCount(slot.getItem().getCount()));
+                            //BackPackNetworkHelper.sendToServer(slotId, itemStack.copyWithCount(slot.getItem().getCount()), menu.backPackType, menu.blockPos);
+                        }
+                        return true;
+                    }
+                } else {
+                    // If try to pickup deactivated item, then toggle back to activated version
+                    if (itemName.contains("_deactivated")) {
+                        ItemStack itemStack = switch (baseItemName) {
+                            case "magnet" -> new ItemStack(ModItems.BACK_PACK_MAGNET_UPGRADE);
+                            case "pickblock" -> new ItemStack(ModItems.BACK_PACK_PICKBLOCK_UPGRADE);
+                            case "itempickup" -> new ItemStack(ModItems.BACK_PACK_ITEMPICKUP_UPGRADE);
+                            case "flight" -> new ItemStack(ModItems.BACK_PACK_FLIGHT_UPGRADE);
+                            case "refill" -> new ItemStack(ModItems.BACK_PACK_REFILL_UPGRADE);
+                            case "feeder" -> new ItemStack(ModItems.BACK_PACK_FEEDER_UPGRADE);
+                            case "toolswap" -> new ItemStack(ModItems.BACK_PACK_TOOLSWAP_UPGRADE);
+                            case "falldamage" -> new ItemStack(ModItems.BACK_PACK_FALLDAMAGE_UPGRADE);
+                            default -> ItemStack.EMPTY;
+                        };
+                        this.slots.get(slotId).set(itemStack.copyWithCount(slot.getItem().getCount()));
+                        //BackPackNetworkHelper.sendToServer(slotId, itemStack.copyWithCount(slot.getItem().getCount()), menu.backPackType, menu.blockPos);
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

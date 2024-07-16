@@ -20,22 +20,37 @@ import java.util.Set;
 public class StorageNetwork {
 
     public final StorageControllerEntity controller;
-    public final Level level;
+    public Level level;
+    public BlockPos controllerPos;
     private final int searchRange = Config.SIMPLE_STORAGE_NETWORK_RANGE.get();
     public final int baseCapacity = 32;
     public final int itemStackSize = 64;
     public Set<BlockPos> components = new HashSet<>();
-    public NonNullList<SimpleStorageBoxEntity> boxes = NonNullList.create();
+    public NonNullList<StorageNetworkItem> boxes = NonNullList.create();
     public NonNullList<ItemStack> items = NonNullList.create();
     public int maxItemCapacity = itemStackSize * baseCapacity; // Get maximum capacity of connected box with largest capacity
+    public int networkVersion = 0;
 
     public StorageNetwork(StorageControllerEntity controller) {
         this.controller = controller;
         this.level = controller.getLevel();
-        this.components = getConnectedComponents(this.level, this.controller.getBlockPos());
+        this.controllerPos = controller.getBlockPos();
+        this.components = getConnectedComponents(this.level, this.controllerPos);
         getBoxes(this.level, this.components);
         getItems(this.boxes);
-        //FXNTStorage.LOGGER.info("Components: {} Boxes: {} Items: {}", this.components.size(), this.boxes.size(), this.items);
+    }
+
+    public void updateStorageNetwork() {
+        this.level = this.controller.getLevel();
+        this.controllerPos = this.controller.getBlockPos();
+        Set<BlockPos> newComponents = getConnectedComponents(this.level, this.controllerPos);
+        if (!newComponents.equals(this.components)) {
+            this.components = newComponents;
+            this.networkVersion++;
+            if (this.networkVersion > 999) this.networkVersion = 0;
+        }
+        getBoxes(this.level, this.components);
+        getItems(this.boxes);
     }
 
     private Set<BlockPos> getConnectedComponents(Level level, BlockPos origin) {
@@ -88,24 +103,28 @@ public class StorageNetwork {
 
     public void getBoxes(Level level, Set<BlockPos> components) {
         if (level == null) return;
+        this.boxes.clear();
 
         for (BlockPos blockPos : components) {
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
             if (blockEntity instanceof SimpleStorageBoxEntity boxEntity) {
-                this.boxes.add(boxEntity);
+                StorageNetworkItem networkItem = new StorageNetworkItem(boxEntity);
+                this.boxes.add(networkItem);
             } else if (blockEntity instanceof StorageInterfaceEntity interfaceEntity) {
                 interfaceEntity.setController(this.controller);
             }
         }
-        this.boxes.sort((o1, o2) -> Integer.compare(o2.hashCode(), o1.hashCode()));
+        this.boxes.sort((o1, o2) -> CharSequence.compare(o2.id, o1.id));
     }
     private void addBox(List<SimpleStorageBoxEntity> list, SimpleStorageBoxEntity blockEntity) {
         if (!list.contains(blockEntity)) list.add(blockEntity);
     }
 
-    private void getItems(NonNullList<SimpleStorageBoxEntity> boxes) {
+    private void getItems(NonNullList<StorageNetworkItem> boxes) {
 
-        for(SimpleStorageBoxEntity blockEntity : boxes) {
+        this.items.clear();
+        for (StorageNetworkItem networkItem : boxes) {
+            SimpleStorageBoxEntity blockEntity = networkItem.simpleStorageBoxEntity;
             ItemStack filterItem = blockEntity.getFilterItem();
             int storedAmount = blockEntity.getStoredAmount();
             ItemStack itemToAdd = ItemStack.EMPTY;
@@ -123,7 +142,8 @@ public class StorageNetwork {
     public ItemStack insertItems(ItemStack itemStack) {
         // Iterate through all boxes looking for matching boxes with available space or empty boxes
         List<SimpleStorageBoxEntity> emptyBoxes = new ArrayList<>();
-        for (SimpleStorageBoxEntity blockEntity : this.boxes) {
+        for (StorageNetworkItem networkItem : this.boxes) {
+            SimpleStorageBoxEntity blockEntity = networkItem.simpleStorageBoxEntity;
             ItemStack filterItem = blockEntity.getFilterItem();
             if (filterItem.isEmpty()) {
                 // Prefer adding into boxes that already contain item so do empty boxes last
@@ -148,7 +168,8 @@ public class StorageNetwork {
         ItemStack testStack = itemStack.copy();
         int amountCanInsert = 0;
         boolean canVoid = false;
-        for (SimpleStorageBoxEntity blockEntity : this.boxes) {
+        for (StorageNetworkItem networkItem : this.boxes) {
+            SimpleStorageBoxEntity blockEntity = networkItem.simpleStorageBoxEntity;
             ItemStack filterItem = blockEntity.getFilterItem();
             if (filterItem.isEmpty() || blockEntity.filterTest(testStack)) {
                 int availableSpace = blockEntity.getMaxItemCapacity() - blockEntity.getStoredAmount();
@@ -185,7 +206,8 @@ public class StorageNetwork {
             i++;
         }
 
-        for (SimpleStorageBoxEntity blockEntity : this.boxes) {
+        for (StorageNetworkItem networkItem : this.boxes) {
+            SimpleStorageBoxEntity blockEntity = networkItem.simpleStorageBoxEntity;
             if (blockEntity.filterTest(itemStack)) {
                 int availableItems = blockEntity.getStoredAmount();
                 int amountToTake = Math.min(availableItems, amount);
@@ -199,7 +221,8 @@ public class StorageNetwork {
 
     public int getAmountOfItem(ItemStack itemStack) {
         int amount = 0;
-        for (SimpleStorageBoxEntity blockEntity : this.boxes) {
+        for (StorageNetworkItem networkItem : this.boxes) {
+            SimpleStorageBoxEntity blockEntity = networkItem.simpleStorageBoxEntity;
             if (blockEntity.filterTest(itemStack)) {
                 amount += blockEntity.getStoredAmount();
             }
@@ -209,6 +232,29 @@ public class StorageNetwork {
 
     private boolean isNetworkComponent(BlockState blockState) {
         return blockState.is(ModTags.STORAGE_NETWORK_BLOCK);
+    }
+
+    public StorageNetworkItem getBoxByItem(ItemStack itemStack) {
+        for (StorageNetworkItem networkItem : this.boxes) {
+            SimpleStorageBoxEntity blockEntity = networkItem.simpleStorageBoxEntity;
+            if (blockEntity.filterTest(itemStack)) {
+                return networkItem;
+            }
+        }
+        return null;
+    }
+
+    public class StorageNetworkItem {
+        public SimpleStorageBoxEntity simpleStorageBoxEntity;
+        public String id;
+
+        public StorageNetworkItem(SimpleStorageBoxEntity simpleStorageBoxEntity) {
+            this.simpleStorageBoxEntity = simpleStorageBoxEntity;
+            Level level = simpleStorageBoxEntity.getLevel();
+            String dimension = "null";
+            if (level != null) dimension = level.toString();
+            this.id =  dimension + simpleStorageBoxEntity.pos.toShortString();
+        }
     }
 
 
