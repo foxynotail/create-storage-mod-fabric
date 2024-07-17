@@ -1,17 +1,14 @@
 package net.fxnt.fxntstorage.simple_storage;
 
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
-import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.fxnt.fxntstorage.FXNTStorage;
-import net.fxnt.fxntstorage.containers.util.ContainerSaveContents;
+import net.fxnt.fxntstorage.config.Config;
+import net.fxnt.fxntstorage.containers.util.EnumProperties;
+import net.fxnt.fxntstorage.containers.util.ImplementedContainer;
 import net.fxnt.fxntstorage.init.ModBlocks;
 import net.fxnt.fxntstorage.init.ModItems;
 import net.fxnt.fxntstorage.init.ModTags;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -20,10 +17,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -32,40 +29,41 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.UUID;
 
-public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyContainer, ContainerSaveContents, ExtendedScreenHandlerFactory {
+public class SimpleStorageBoxEntity extends BlockEntity implements ImplementedContainer, ExtendedScreenHandlerFactory {
     public String title = "Simple Storage Box";
     public BlockPos pos;
+    public int tick = 0;
+    public long lastInteractTime = 0;
+    public UUID lastInteractPlayer = UUID.randomUUID();
+    public byte lastInteractType = -1;
+    public int interactWindow = 600;
     public int baseCapacity = 32;
     public int itemStackSize = 64;
     public int maxCapacity = baseCapacity; // Measured in stacks so max planks = 64 * 8000, max ender pearls = 16 * 8000
     public int maxItemCapacity = itemStackSize * maxCapacity;
     public int slot0MaxCapacity = maxItemCapacity - itemStackSize;
-    public int slot1MaxCapacity = itemStackSize;
     public int slot0Amount = 0;
     public int slot1Amount = 0;
     public int storedAmount = 0;
-    public int percentageUsed = 0;
     public boolean voidUpgrade = false;
     public int voidUpgradeSlot = 3;
     public int capacityUpgrades = 0;
     public int capacityUpgradeStartSlot = 4;
     public int maxCapacityUpgrades = 9;
-    public int capacityUpgradeEndSlot = capacityUpgradeStartSlot + maxCapacityUpgrades;
     public int baseSlotCount = 3;
-    public int slotCount = baseSlotCount + 1 + maxCapacityUpgrades; // 3 + Void Upgrade Slot + Capacity Upgrade Slots
+    public int slotCount = baseSlotCount + 1 + maxCapacityUpgrades; // 2 + RemainderSlot + Void Upgrade Slot + Capacity Upgrade Slots
     public NonNullList<ItemStack> items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
     public ItemStack filterItem = ItemStack.EMPTY;
-    private final SimpleStorageBoxEntityHelper<SimpleStorageBoxEntity> helper;
 
     public SimpleStorageBoxEntity(BlockPos pos, BlockState blockState) {
         super(ModBlocks.SIMPLE_STORAGE_BOX_ENTITY, pos, blockState);
         this.pos = pos;
-        this.helper = new SimpleStorageBoxEntityHelper<>(this);
     }
 
     @Override
@@ -96,12 +94,26 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
     }
 
     public int getStoredAmount() {
-        this.storedAmount = this.getItem(0).getCount() + this.getItem(1).getCount();
+        // Take into account items in slot 1 as this affects items being inserted
+        this.storedAmount = this.items.get(0).getCount() + this.items.get(1).getCount();
         return this.storedAmount;
     }
 
     public int getMaxItemCapacity() {
-        this.calculateMaxCapacity();
+        this.maxCapacity = this.baseCapacity;
+        if (this.getCapacityUpgrades() > 0) {
+            for (int i = 0; i < this.capacityUpgrades; i++) {
+                this.maxCapacity *= 2;
+            }
+        }
+        this.maxItemCapacity = this.maxCapacity * 64;
+
+        if (!filterItem.isEmpty()) {
+            this.itemStackSize = filterItem.getMaxStackSize();
+            // If has item then get max stack size of item and multiply by maxCapacity
+            this.maxItemCapacity = this.maxCapacity * filterItem.getMaxStackSize();
+            this.slot0MaxCapacity = this.maxItemCapacity - filterItem.getMaxStackSize();
+        }
         return this.maxItemCapacity;
     }
 
@@ -116,39 +128,7 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
             // Pass empty slot if slot out of bounds
             return ItemStack.EMPTY;
         }
-        return ContainerSaveContents.super.getItem(slot);
-    }
-
-    public void calculateMaxCapacity() {
-        // Set Max Item Capacity & Filter Item
-        this.maxCapacity = this.baseCapacity;
-        if (this.getCapacityUpgrades() > 0) {
-            for (int i = 0; i < this.capacityUpgrades; i++) {
-                this.maxCapacity *= 2;
-            }
-        }
-        this.maxItemCapacity = this.maxCapacity * 64;
-
-        if (!filterItem.isEmpty()) {
-            this.itemStackSize = filterItem.getMaxStackSize();
-            // If has item then get max stack size of item and multiply by maxCapacity
-            this.maxItemCapacity = this.maxCapacity * filterItem.getMaxStackSize();
-            this.slot0MaxCapacity = this.maxItemCapacity - this.itemStackSize;
-            this.slot1MaxCapacity = this.itemStackSize;
-        }
-    }
-
-    public int getPercentageUsed() {
-        calculatePercentageUsed();
-        return this.percentageUsed;
-    }
-
-    public int calculatePercentageUsed() {
-        int totalSpace = getMaxItemCapacity();
-        int usedSpace = getStoredAmount();
-        double percentageUsed = ((double) usedSpace / totalSpace) * 100;
-        this.percentageUsed = (int) Math.round(percentageUsed);
-        return this.percentageUsed;
+        return getItems().get(slot);
     }
 
     public void onLoad() {
@@ -157,7 +137,6 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
         }
     }
 
-    @Override
     public void saveInventoryToTag(CompoundTag tag) {
         ListTag listTag = new ListTag();
         for (int i = 0; i < this.slotCount; i++) {
@@ -172,6 +151,23 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
     }
 
     @Override
+    protected void saveAdditional(CompoundTag tag) {
+        this.saveInventoryToTag(tag);
+        tag.putString("title", this.title);
+        tag.putInt("slotCount", this.slotCount);
+        tag.putInt("maxCapacity", this.maxCapacity);
+        tag.putInt("maxItemCapacity", this.getMaxItemCapacity());
+        tag.putInt("storedAmount", this.getStoredAmount());
+        tag.putBoolean("voidUpgrade", this.hasVoidUpgrade());
+        tag.putInt("capacityUpgrades", this.getCapacityUpgrades());
+        tag.putInt("slot0Amount", this.items.get(0).getCount());
+        tag.putInt("slot1Amount", this.items.get(1).getCount());
+        CompoundTag filterTag = new CompoundTag();
+        this.filterItem.save(filterTag);
+        tag.put("filterItem", filterTag);
+        super.saveAdditional(tag);
+    }
+
     public void loadInventoryFromTag(CompoundTag tag) {
         if (tag.contains("Items")) {
             this.items.clear();
@@ -189,15 +185,14 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
     }
 
     @Override
-    protected void read(CompoundTag tag, boolean clientPacket) {
-        super.read(tag, clientPacket);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         this.loadInventoryFromTag(tag);
         this.title = tag.getString("title");
         this.slotCount = tag.getInt("slotCount");
         this.maxCapacity = tag.getInt("maxCapacity");
         this.maxItemCapacity = tag.getInt("maxItemCapacity");
         this.storedAmount = tag.getInt("storedAmount");
-        this.percentageUsed = tag.getInt("percentageUsed");
         this.voidUpgrade = tag.getBoolean("voidUpgrade");
         this.capacityUpgrades = tag.getInt("capacityUpgrades");
         this.slot0Amount = tag.getInt("slot0Amount");
@@ -209,27 +204,17 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
     }
 
     @Override
-    protected void write(CompoundTag tag, boolean clientPacket) {
-        super.write(tag, clientPacket);
-        this.saveInventoryToTag(tag);
-        tag.putString("title", this.title);
-        tag.putInt("slotCount", this.slotCount);
-        tag.putInt("maxCapacity", this.maxCapacity);
-        tag.putInt("maxItemCapacity", this.getMaxItemCapacity());
-        tag.putInt("storedAmount", this.getStoredAmount());
-        tag.putInt("percentageUsed", this.calculatePercentageUsed());
-        tag.putBoolean("voidUpgrade", this.hasVoidUpgrade());
-        tag.putInt("capacityUpgrades", this.getCapacityUpgrades());
-        tag.putInt("slot0Amount", this.items.get(0).getCount());
-        tag.putInt("slot1Amount", this.items.get(1).getCount());
-        CompoundTag filterTag = new CompoundTag();
-        this.filterItem.save(filterTag);
-        tag.put("filterItem", filterTag);
+    public @NotNull CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
+
 
     @Override
     public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
@@ -258,47 +243,52 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
         return true;
     }
 
-    @Override
-    public @NotNull CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveAdditional(tag);
-        return tag;
-    }
-
     public <T extends BlockEntity> void serverTick(Level level, BlockPos blockPos, BlockEntity blockEntity) {
 
         if (level.isClientSide) return;
 
-        ItemStack slot0 = this.getItem(0);
-        ItemStack slot1 = this.getItem(1);
+        ItemStack slot0 = this.items.get(0);
 
         // Get Stored Amount
-        this.storedAmount = slot0.getCount() + slot1.getCount();
+        this.storedAmount = this.getStoredAmount();
 
         // Set filter item to items inside to prevent wrong items being put in
-        if (this.storedAmount > 0) {
-            ItemStack storedItem = slot0;
-            if (storedItem.isEmpty()) storedItem = slot1;
-            if (!storedItem.isEmpty() && !ItemStack.isSameItemSameTags(storedItem, this.filterItem)) {
-                this.setFilter(storedItem);
-            }
+        if (!slot0.isEmpty() && !ItemStack.isSameItemSameTags(slot0, this.filterItem)) {
+            this.setFilter(slot0);
         }
 
-        calculateMaxCapacity();
+        getMaxItemCapacity();
         moveItems();
 
-        // Run standard tick functions
-        helper.serverTick(level, blockPos, blockEntity);
+        if (this.tick >= Config.STORAGE_BOX_UPDATE_TIME.get()) {
+
+            BlockState currentState = this.getBlockState();
+            level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+
+            EnumProperties.StorageUsed newStorageUsed = EnumProperties.StorageUsed.EMPTY;
+
+            int storedAmount = this.getStoredAmount();
+
+            if (storedAmount >= this.getMaxItemCapacity()) {
+                newStorageUsed = EnumProperties.StorageUsed.FULL;
+            } else if (storedAmount > 0) {
+                newStorageUsed = EnumProperties.StorageUsed.HAS_ITEMS;
+            }
+
+            if (currentState.getValue(SimpleStorageBox.STORAGE_USED) != newStorageUsed) {
+                level.setBlock(blockPos, currentState.setValue(SimpleStorageBox.STORAGE_USED, newStorageUsed), 3); // 3 is the update flag
+            }
+        }
+        this.tick++;
     }
 
     private void moveItems() {
 
-        ItemStack slot0 = this.getItem(0);
-        ItemStack slot1 = this.getItem(1);
-        //FXNTStorage.LOGGER.warn("Slot0 {} Slot1 {}", slot0, slot1);
+        ItemStack slot0 = this.items.get(0);
+        ItemStack slot1 = this.items.get(1);
 
         // If full & using void upgrade then items go into slot 2 (delete them all!)
-        if (!this.getItem(2).isEmpty()) {
+        if (!this.items.get(2).isEmpty()) {
             this.setItem(2, ItemStack.EMPTY);
         }
 
@@ -310,11 +300,12 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
 
         // If no items in slot 0, then add
         if (slot0.isEmpty()) {
+
             this.setItem(0, slot1.copy());
             this.setItem(1, ItemStack.EMPTY);
-            this.setChanged();
 
         } else {
+            // Always move items from slot 1 to 0 if space available
             int slot0FreeSpace = this.slot0MaxCapacity - slot0.getCount();
             int amountToMove = Math.min(slot1Amount, slot0FreeSpace);
             slot0.grow(amountToMove);
@@ -334,6 +325,20 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
     }
 
     @Override
+    public boolean canPlaceItem(int index, @NotNull ItemStack itemStack) {
+        // Check filter
+        if (!this.filterTest(itemStack)) return false;
+
+        // Check space in slot 0
+        int freeSpace = this.getMaxItemCapacity() - this.getStoredAmount();
+
+        if (this.hasVoidUpgrade()) return true;
+
+        int amountToPlace = itemStack.getCount();
+        return freeSpace > amountToPlace;
+    }
+
+    @Override
     public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction direction) {
         return canPlaceItem(index, itemStack);
     }
@@ -343,19 +348,77 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
         return true;
     }
 
-    @Override
-    public boolean canPlaceItem(int index, @NotNull ItemStack itemStack) {
+    public void transferItemsToPlayer(Player player) {
+        if (getStoredAmount()==0) return;;
 
-        // Check filter
-        if (!this.filterTest(itemStack)) return false;
+        ItemStack srcStack = this.items.get(0);
+        if (srcStack.isEmpty()) return;
 
-        // Check space in slot 0
-        int freeSpace = this.getMaxItemCapacity() - this.getStoredAmount();
-        return freeSpace > 0 || this.hasVoidUpgrade();
+        if (Util.getMillis() < this.lastInteractTime + this.interactWindow && player.getUUID().equals(this.lastInteractPlayer) && this.lastInteractType == 0) {
+            transferAllItemsToPlayer(player, srcStack);
+        } else {
+            this.lastInteractTime = Util.getMillis();
+            this.lastInteractPlayer = player.getUUID();
+            this.lastInteractType = 0;
+            int amountToMove = Math.min(this.getStoredAmount(), srcStack.getMaxStackSize());
+            if (player.isShiftKeyDown()) amountToMove = 1;
+            doTransferToPlayer(player, srcStack, amountToMove, false);
+        }
     }
 
-    public void transferItemsToPlayer(Player player) {
-        helper.transferItemsToPlayer(player);
+    public void transferAllItemsToPlayer(Player player, ItemStack srcStack) {
+        int srcAmount = srcStack.getCount();
+        while(srcAmount > 0 && playerHasSpace(player, srcStack)) {
+            if (!doTransferToPlayer(player, srcStack, srcAmount, true)) break;
+            srcAmount = srcStack.getCount();
+        }
+    }
+
+    private Boolean playerHasSpace(Player player, ItemStack srcStack) {
+        int playerSlot = player.getInventory().getSlotWithRemainingSpace(srcStack);
+        if (playerSlot < 0) {
+            playerSlot = player.getInventory().getFreeSlot();
+        }
+        return playerSlot >= 0;
+    }
+
+    public boolean doTransferToPlayer(Player player, ItemStack srcStack, int amountToMove, boolean transferAll) {
+
+        int playerSlot = player.getInventory().selected;
+        ItemStack playerStack = player.getItemInHand(InteractionHand.MAIN_HAND);
+        int availableSpace = srcStack.getMaxStackSize() - playerStack.getCount();
+
+        if ((!playerStack.isEmpty() && !ItemStack.isSameItemSameTags(srcStack, playerStack)) || availableSpace <= 0) {
+            playerSlot = player.getInventory().getSlotWithRemainingSpace(srcStack);
+            if (playerSlot < 0) {
+                playerSlot = player.getInventory().getFreeSlot();
+            }
+            if (playerSlot < 0) {
+                if (!transferAll) {
+                    dropItems(this.getLevel(), srcStack.copyWithCount(amountToMove));
+                    srcStack.shrink(amountToMove);
+                    this.setChanged();
+                }
+                return false;
+            }
+            playerStack = player.getInventory().getItem(playerSlot);
+            availableSpace = srcStack.getMaxStackSize() - playerStack.getCount();
+        }
+
+        int moveAmount = Math.min(availableSpace, amountToMove);
+
+        if (moveAmount > 0) {
+            if (!playerStack.isEmpty()) {
+                playerStack.grow(moveAmount);
+            } else {
+                player.getInventory().setItem(playerSlot, srcStack.copyWithCount(moveAmount));
+            }
+            player.getInventory().setChanged();
+            srcStack.shrink(moveAmount);
+            this.setChanged();
+            return true;
+        }
+        return false;
     }
 
     public void transferItemsFromPlayer(Player player) {
@@ -366,14 +429,13 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
 
             if (handItem.is(ModItems.STORAGE_BOX_VOID_UPGRADE)) {
                 if (!this.hasVoidUpgrade()) {
-                    this.items.set(this.voidUpgradeSlot, handItem.copyWithCount(1));
-                    this.setChanged();
+                    this.setItem(this.voidUpgradeSlot, handItem.copyWithCount(1));
                     if (!player.isCreative()) {
                         handItem.shrink(1);
                         player.getInventory().setChanged();
                     }
                 } else {
-                    ItemStack voidStack = this.getItem(3);
+                    ItemStack voidStack = this.items.get(this.voidUpgradeSlot);
                     int slot = player.getInventory().getSlotWithRemainingSpace(voidStack);
                     if (slot > -1) {
                         player.getInventory().getItem(slot).grow(1);
@@ -384,18 +446,16 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
                             player.getInventory().setItem(slot, voidStack);
                             player.getInventory().setChanged();
                         } else {
-                            helper.dropItems(this.getLevel(), voidStack);
+                            dropItems(this.getLevel(), voidStack);
                         }
                     }
-                    voidStack.setCount(0);
-                    this.setChanged();
+                    this.setItem(this.voidUpgradeSlot, ItemStack.EMPTY);
                 }
             } else if (handItem.is(ModItems.STORAGE_BOX_CAPACITY_UPGRADE)) {
                 boolean canAddUpgrade = false;
                 for (int i = this.capacityUpgradeStartSlot; i < this.capacityUpgradeStartSlot + this.maxCapacityUpgrades; i++) {
                     if (this.items.get(i).isEmpty()) {
-                        this.items.set(i, handItem.copyWithCount(1));
-                        this.setChanged();
+                        this.setItem(i, handItem.copyWithCount(1));
                         canAddUpgrade = true;
                         break;
                     }
@@ -409,68 +469,81 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
             }
         }
 
-        helper.transferItemsFromPlayer(player);
+        if (Util.getMillis() < this.lastInteractTime + this.interactWindow
+                && player.getUUID().equals(this.lastInteractPlayer)
+                && this.lastInteractType == 1
+                && handItem.isEmpty()
+        ) {
+            transferAllItemsFromPlayer(player);
+        } else if (!handItem.isEmpty()) {
+            this.lastInteractTime = Util.getMillis();
+            this.lastInteractPlayer = player.getUUID();
+            this.lastInteractType = 1;
+            doTransferItemsFromPlayer(player, handItem);
+        }
     }
 
-    public ItemStack insertItems(ItemStack itemStack) {
-        if (this.filterTest(itemStack)) {
+    public void transferAllItemsFromPlayer(Player player) {
+        for (int i = 0; i <= player.getInventory().getContainerSize(); i++) {
+            ItemStack slotStack = player.getInventory().getItem(i);
+            if (this.filterTest(slotStack)) {
+                doTransferItemsFromPlayer(player, slotStack);
+            }
+        }
+    }
+
+    private void doTransferItemsFromPlayer(Player player, ItemStack srcStack) {
+        insertItems(srcStack);
+        player.getInventory().setChanged();
+    }
+
+    public ItemStack insertItems(ItemStack srcStack) {
+        if (this.filterTest(srcStack)) {
             int availableSpace = this.getMaxItemCapacity() - this.getStoredAmount();
-            int srcAmount = itemStack.getCount();
-            int moveAmount = Math.min(srcAmount, availableSpace);
+            int srcAmount = srcStack.getCount();
 
             if (availableSpace <= 0 && hasVoidUpgrade()) {
-                itemStack.setCount(0);
-                return itemStack;
+                srcStack.shrink(srcAmount);
+                return srcStack;
             }
+            int moveAmount = Math.min(srcAmount, availableSpace);
 
             if (moveAmount > 0) {
 
                 if (this.getFilterItem().isEmpty()) {
-                    setFilter(itemStack);
+                    setFilter(srcStack);
                 }
 
-                if (this.getItem(1).isEmpty()) {
-                    this.setItem(1, itemStack.copyWithCount(moveAmount));
+                if (!this.items.get(1).isEmpty()) {
+                    this.items.get(1).grow(moveAmount);
                 } else {
-                    this.getItem(1).grow(moveAmount);
+                    this.setItem(1, srcStack.copyWithCount(moveAmount));
                 }
-                this.setChanged();
-                itemStack.shrink(moveAmount);
+                srcStack.shrink(moveAmount);
             }
         }
-        return itemStack;
+        return srcStack;
     }
 
-    private void clearItems() {
-        // Don't clear upgrades!
-        this.items.set(0, ItemStack.EMPTY);
-        this.items.set(1, ItemStack.EMPTY);
-        this.items.set(2, ItemStack.EMPTY);
-    }
 
-    public void controllerSetItems(ItemStack itemStack) {
-        // Resetting the amount stored in this box from a storage controller
-        // Wipe anything in slot 0 and 1 and then add as normal
-        this.clearItems();
-        this.insertItems(itemStack);
-        this.setChanged();
-    }
+    public void dropItems(Level level, ItemStack itemStack) {
+        Direction facing = SimpleStorageBox.getDirectionFacing(getBlockState());
+        float xOffset = 0.5f;
+        float zOffset = 0.5f;
+        if (facing == Direction.NORTH) zOffset = 0.5f -0.8f;
+        if (facing == Direction.WEST) xOffset = 0.5f -0.8f;
+        if (facing == Direction.EAST) xOffset = 1.3f;
+        if (facing == Direction.SOUTH) zOffset = 1.3f;
 
-    public ItemStack controllerRemoveItems(int amount) {
-        if (amount <= this.storedAmount) {
-            int newAmount = this.storedAmount - amount;
-            ItemStack newStack = this.filterItem.copyWithCount(newAmount);
-            this.clearItems();
-            this.insertItems(newStack);
-            this.setChanged();
-            return newStack.copyWithCount(amount);
-        }
-        return ItemStack.EMPTY;
-    }
-
-    public ItemStack controllerRemoveItemsNoUpdate() {
-        this.clearItems();
-        return ItemStack.EMPTY;
+        float dropX = this.pos.getX() + xOffset;
+        float dropY = this.pos.getY();
+        float dropZ = this.pos.getZ() + zOffset;
+        // Create Item Entities
+        ItemStack dropStack = itemStack.split(itemStack.getCount());
+        ItemEntity droppedItems = new ItemEntity(level, dropX, dropY, dropZ, dropStack);
+        Vec3 motion = droppedItems.getDeltaMovement();
+        droppedItems.push(-motion.x, -motion.y, -motion.z);
+        level.addFreshEntity(droppedItems);
     }
 
     public void removeFilter() {
@@ -487,10 +560,11 @@ public class SimpleStorageBoxEntity extends SmartBlockEntity implements WorldlyC
             return false;
         }
 
-        if (!this.filterItem.isEmpty() && !ItemStack.isSameItemSameTags(stack, this.filterItem)) {
-            return false;
-        }
+        return this.filterItem.isEmpty() || ItemStack.isSameItemSameTags(stack, this.filterItem);
+    }
 
-        return true;
+    @Override
+    public CompoundTag serializeNBT() {
+        return super.serializeNBT();
     }
 }

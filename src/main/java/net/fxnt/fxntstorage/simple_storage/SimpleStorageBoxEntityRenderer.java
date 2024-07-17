@@ -2,12 +2,12 @@ package net.fxnt.fxntstorage.simple_storage;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import com.simibubi.create.foundation.blockEntity.renderer.SmartBlockEntityRenderer;
 import net.fxnt.fxntstorage.init.ModItems;
 import net.fxnt.fxntstorage.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
@@ -21,12 +21,11 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Matrix4f;
 
-public class SimpleStorageBoxEntityRenderer extends SmartBlockEntityRenderer<SimpleStorageBoxEntity> {
+public class SimpleStorageBoxEntityRenderer implements BlockEntityRenderer<SimpleStorageBoxEntity> {
     private final BlockEntityRendererProvider.Context context;
     private static final float[] sideRotationY2D = { 0, 0, 2, 0, 3, 1 };
     private static final int TEXT_COLOR_TRANSPARENT = FastColor.ARGB32.color(0, 255, 255, 255);
     public SimpleStorageBoxEntityRenderer(BlockEntityRendererProvider.Context context) {
-        super(context);
         this.context = context;
     }
 
@@ -35,7 +34,7 @@ public class SimpleStorageBoxEntityRenderer extends SmartBlockEntityRenderer<Sim
     }
 
     @Override
-    protected void renderSafe(SimpleStorageBoxEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
+    public void render(SimpleStorageBoxEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay) {
 
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
@@ -44,13 +43,13 @@ public class SimpleStorageBoxEntityRenderer extends SmartBlockEntityRenderer<Sim
         if (level == null) return;
 
         int amount = blockEntity.getStoredAmount();
+        int totalSpace = blockEntity.getMaxItemCapacity();
+        int percentUsed = (int) Math.round(((double) amount / totalSpace) * 100);
 
         String line1 = Util.formatNumber(amount);
         String line2;
 
-        int percentUsed = blockEntity.getPercentageUsed();
         line2 = percentUsed + "% Used";
-        //line2 = Util.formatNumber(blockEntity.getMaxItemCapacity());
 
         float distance = (float)Math.sqrt(blockEntity.getBlockPos().distToCenterSqr(player.position()));
         float alpha = Math.max(1f - ((distance) / 10), 0.05f);

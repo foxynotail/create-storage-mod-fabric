@@ -77,7 +77,7 @@ public class SimpleStorageBox extends BaseEntityBlock implements EntityBlock {
                 ItemStack itemStack = new ItemStack(state.getBlock());
                 if (!level.isClientSide && blockEntity instanceof SimpleStorageBoxEntity) {
                     CompoundTag tag = new CompoundTag();
-                    ((SimpleStorageBoxEntity) blockEntity).write(tag, false);
+                    ((SimpleStorageBoxEntity) blockEntity).saveAdditional(tag);
                     if (!tag.isEmpty()) {
                         itemStack.getOrCreateTag().put("BlockEntityTag", tag);
                     }

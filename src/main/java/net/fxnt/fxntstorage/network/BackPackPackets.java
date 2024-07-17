@@ -74,7 +74,6 @@ public class BackPackPackets {
                 (server, player, handler, buf, responseSender) -> {
                     server.execute(() -> {
                         if (player.containerMenu instanceof BackPackMenu backPackMenu) {
-                            FXNTStorage.LOGGER.info("CTRL KEY DOWN");
                             backPackMenu.ctrlKeyDown = true;
                         }
                     });
@@ -85,7 +84,6 @@ public class BackPackPackets {
                 (server, player, handler, buf, responseSender) -> {
                     server.execute(() -> {
                         if (player.containerMenu instanceof BackPackMenu backPackMenu) {
-                            FXNTStorage.LOGGER.info("CTRL KEY UP");
                             backPackMenu.ctrlKeyDown = false;
                         }
                     });

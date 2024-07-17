@@ -1,6 +1,5 @@
 package net.fxnt.fxntstorage.simple_storage;
 
-import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.init.ModItems;
 import net.fxnt.fxntstorage.init.ModMenuTypes;
 import net.fxnt.fxntstorage.util.Util;

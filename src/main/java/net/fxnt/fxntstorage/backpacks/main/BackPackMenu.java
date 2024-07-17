@@ -4,7 +4,6 @@ import com.google.common.collect.Sets;
 import com.simibubi.create.AllTags;
 import io.github.fabricators_of_create.porting_lib.tags.Tags;
 import io.github.fabricators_of_create.porting_lib.tool.ToolActions;
-import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.backpacks.upgrades.UpgradeItem;
 import net.fxnt.fxntstorage.init.ModItems;
 import net.fxnt.fxntstorage.init.ModTags;
@@ -683,7 +682,6 @@ public class BackPackMenu extends AbstractContainerMenu {
 
     public boolean toggleUpgrade(int slotId, boolean ctrlKeyDown) {
 
-        FXNTStorage.LOGGER.info("{} Toggle Upgrade: Ctrl Key Down {}", this.player.level(), ctrlKeyDown);
         Slot slot = this.slots.get(slotId);
         if (slotId >= Util.UPGRADE_SLOT_START_RANGE && slotId < Util.UPGRADE_SLOT_END_RANGE) {
             if(slot.getItem().is(ModTags.BACK_PACK_UPGRADE) && slot.getItem().getItem() instanceof UpgradeItem upgradeItem) {
