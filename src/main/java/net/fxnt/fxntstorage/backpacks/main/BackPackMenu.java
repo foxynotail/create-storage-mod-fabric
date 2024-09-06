@@ -682,6 +682,7 @@ public class BackPackMenu extends AbstractContainerMenu {
 
     public boolean toggleUpgrade(int slotId, boolean ctrlKeyDown) {
 
+        if (slotId < 0 || slotId > slots.size()) return false;
         Slot slot = this.slots.get(slotId);
         if (slotId >= Util.UPGRADE_SLOT_START_RANGE && slotId < Util.UPGRADE_SLOT_END_RANGE) {
             if(slot.getItem().is(ModTags.BACK_PACK_UPGRADE) && slot.getItem().getItem() instanceof UpgradeItem upgradeItem) {

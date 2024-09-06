@@ -1,5 +1,6 @@
 package net.fxnt.fxntstorage.backpacks.upgrades;
 
+import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.backpacks.main.BackPackContainer;
 import net.fxnt.fxntstorage.backpacks.main.BackPackItem;
 import net.fxnt.fxntstorage.backpacks.main.BackPackMenu;
@@ -112,7 +113,7 @@ public class BackPackOnBackUpgradeHandler {
             doFeed = true;
         }
         // Feed if less than 3 hunger honches
-        if (hunger < 6) {
+        if (hunger <= 6) {
             doFeed = true;
         }
         // Find food in backpack
