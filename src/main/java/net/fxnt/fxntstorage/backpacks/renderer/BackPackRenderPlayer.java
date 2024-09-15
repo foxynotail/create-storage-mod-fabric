@@ -6,7 +6,6 @@ import com.mojang.math.Axis;
 import net.fxnt.fxntstorage.FXNTStorage;
 import net.fxnt.fxntstorage.backpacks.util.BackPackHelper;
 import net.fxnt.fxntstorage.init.ModBlocks;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -30,12 +29,13 @@ public class BackPackRenderPlayer extends RenderLayer<AbstractClientPlayer, Huma
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource buffer, int packedLight, AbstractClientPlayer livingEntity, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
-        Player player = Minecraft.getInstance().player;
-        ItemStack backPack = new BackPackHelper().getWornBackPackStack(player);
+        // Check if the current player being rendered (livingEntity) has a backpack equipped
+        ItemStack backPack = new BackPackHelper().getWornBackPackStack(livingEntity);
         if (backPack.isEmpty()) {
-            return;
+            return;  // If no backpack is equipped, stop rendering
         }
 
+        // Set the texture location based on the backpack type
         if (backPack.getItem().equals(ModBlocks.BACK_PACK_ITEM)) {
             TEXTURE_LOCATION = new ResourceLocation(FXNTStorage.MOD_ID, "textures/block/back_pack.png");
         } else if (backPack.getItem().equals(ModBlocks.ANDESITE_BACK_PACK_ITEM)) {
@@ -48,23 +48,27 @@ public class BackPackRenderPlayer extends RenderLayer<AbstractClientPlayer, Huma
             TEXTURE_LOCATION = new ResourceLocation(FXNTStorage.MOD_ID, "textures/block/hardened_back_pack.png");
         }
 
+        // Prepare the vertex consumer for rendering the texture
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityCutout(TEXTURE_LOCATION));
 
         poseStack.pushPose();
 
-        if(livingEntity.isShiftKeyDown()) {
+        // Apply transformations if the player is sneaking
+        if (livingEntity.isShiftKeyDown()) {
             poseStack.mulPose(Axis.XP.rotationDegrees(50f));
             poseStack.translate(0f, 0.0f, -0.60f);
         }
 
+        // Sync model with the player's model
         this.getParentModel().copyPropertiesTo(model);
         model.setupAnim(this.getParentModel());
 
+        // Adjust the backpack position and scale
         poseStack.mulPose(Axis.YP.rotationDegrees(180F));
-
         poseStack.translate(0f, 0.65f, -0.3f);
         poseStack.scale(0.85f, 0.85f, 0.85f);
 
+        // Render the backpack
         model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
 
         poseStack.popPose();
