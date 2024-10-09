@@ -187,7 +187,7 @@ public class StorageBoxEntity extends SmartBlockEntity implements WorldlyContain
     @Override
     public int @NotNull [] getSlotsForFace(Direction side) {
         initializeSlotsForAllDirections();
-        if (SLOTS_FOR_ALL_DIRECTIONS.length < 1) return new int[]{0};
+        if (SLOTS_FOR_ALL_DIRECTIONS.length < 1) return new int[]{};
         return SLOTS_FOR_ALL_DIRECTIONS;
     }
 
