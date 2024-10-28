@@ -87,7 +87,7 @@ public class StorageBoxEntityHelper<T extends StorageBoxEntity> {
     public <T extends BlockEntity> void serverTick(Level level, BlockPos blockPos, BlockEntity blockEntity) {
         if (level != null && !level.isClientSide) {
             instance.lastTick++;
-            if (instance.voidUpgrade) {
+            if (instance.voidUpgrade && instance.slotCount > 0) {
                 // If voidupgrade = true, then void off everything in last slot every tick
                 instance.items.set(instance.slotCount - 1, ItemStack.EMPTY);
             }
