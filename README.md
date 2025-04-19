@@ -1,3 +1,6 @@
+# Updates
+There are no plans to support or update this mod. It is open source so feel free to modify and update it yourself.
+
 This mod features a handful of Storage Boxes, each with different sized inventories as well as a handful of new upgradable backpacks.
 
 # Storage Boxes
