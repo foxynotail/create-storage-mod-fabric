@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.5.+'
+    id 'fabric-loom' version '1.8.+'
     id "io.github.p03w.machete" version "1.+" // automatic jar compressing on build
     id 'maven-publish'
 }
