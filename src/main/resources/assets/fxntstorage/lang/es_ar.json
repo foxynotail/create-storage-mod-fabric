@@ -1,0 +1,126 @@
+{
+  "itemGroup.fxntstorage.main": "FXNT Storage",
+  "itemGroup.fxntstorage.create": "FXNT Storage Create",
+
+  "key.categories.fxntstorage": "FXNT Storage",
+  "key.fxntstorage.open_backpack": "Abrir Mochila",
+  "key.fxntstorage.clear_backpack_shape_cache": "Limpar Caché de Forma de la Mochila",
+  "key.fxntstorage.backpack_hover": "Conmutar el Modo de Vuelo de la Mochila",
+  "key.fxntstorage.toggle_upgrade": "Conmutar Mejora",
+
+  "block.fxntstorage.storage_box": "Caja de Almacenamiento de Hierro Industrial",
+  "container.fxntstorage.industrial_iron_storage_box": "Caja de Almacenamiento de Hierro Industrial",
+
+  "block.fxntstorage.andesite_storage_box": "Caja de Almacenamiento de Andesita",
+  "container.fxntstorage.andesite_storage_box": "Caja de Almacenamiento de Andesita",
+
+  "block.fxntstorage.copper_storage_box": "Caja de Almacenamiento de Cobre",
+  "container.fxntstorage.copper_storage_box": "Caja de Almacenamiento de Cobre",
+
+  "block.fxntstorage.brass_storage_box": "Caja de Almacenamiento de Latón",
+  "container.fxntstorage.brass_storage_box": "Caja de Almacenamiento de Latón",
+
+  "block.fxntstorage.hardened_storage_box": "Caja de Almacenamiento Endurecida",
+  "container.fxntstorage.hardened_storage_box": "Caja de Almacenamiento Endurecida",
+
+  "block.fxntstorage.simple_storage_box": "Caja de Almacenamiento Simple de Roble",
+  "container.fxntstorage.simple_storage_box": "Caja de Almacenamiento Simple de Roble",
+
+  "block.fxntstorage.simple_storage_box_spruce": "Caja de Almacenamiento Simple de Abeto",
+  "container.fxntstorage.simple_storage_box_spruce": "Caja de Almacenamiento Simple de Abeto",
+
+  "block.fxntstorage.simple_storage_box_birch": "Caja de Almacenamiento Simple de Abedul",
+  "container.fxntstorage.simple_storage_box_birch": "Caja de Almacenamiento Simple de Abedul",
+
+  "block.fxntstorage.simple_storage_box_jungle": "Caja de Almacenamiento Simple de la Jungla",
+  "container.fxntstorage.simple_storage_box_jungle": "Caja de Almacenamiento Simple de la Jungla",
+
+  "block.fxntstorage.simple_storage_box_acacia": "Caja de Almacenamiento Simple de Acacia",
+  "container.fxntstorage.simple_storage_box_acacia": "Caja de Almacenamiento Simple de Acacia",
+
+  "block.fxntstorage.simple_storage_box_dark_oak": "Caja de Almacenamiento Simple de Roble Oscuro",
+  "container.fxntstorage.simple_storage_box_dark_oak": "Caja de Almacenamiento Simple de Oscuro",
+
+  "block.fxntstorage.simple_storage_box_mangrove": "Caja de Almacenamiento Simple de Mangle",
+  "container.fxntstorage.simple_storage_box_mangrove": "Caja de Almacenamiento Simple de Mangle",
+
+  "block.fxntstorage.simple_storage_box_cherry": "Caja de Almacenamiento Simple de Cerezo",
+  "container.fxntstorage.simple_storage_box_cherry": "Caja de Almacenamiento Simple de Cerezo",
+
+  "block.fxntstorage.simple_storage_box_bamboo": "Caja de Almacenamiento Simple de Bambú",
+  "container.fxntstorage.simple_storage_box_bamboo": "Caja de Almacenamiento Simple de Bambú",
+
+  "block.fxntstorage.simple_storage_box_crimson": "Caja de Almacenamiento Simple Carmesí",
+  "container.fxntstorage.simple_storage_box_crimson": "Caja de Almacenamiento Simple Carmesí",
+
+  "block.fxntstorage.simple_storage_box_warped": "Caja de Almacenamiento Simple Distorsionada",
+  "container.fxntstorage.simple_storage_box_warped": "Caja de Almacenamiento Simple Distorsionada",
+
+  "block.fxntstorage.storage_controller": "Controlador de Almacenamiento Simple",
+  "container.fxntstorage.storage_controller": "Controlador de Almacenamiento Simple",
+
+  "block.fxntstorage.storage_interface": "Interfaz de Almacenamiento Simple",
+  "container.fxntstorage.storage_interface": "Interfaz de Almacenamiento Simple",
+
+  "block.fxntstorage.passer_block": "Pasador",
+  "block.fxntstorage.smart_passer_block": "Pasador Inteligente",
+
+  "block.fxntstorage.back_pack": "Mochila de Hierro Industrial",
+  "container.fxntstorage.back_pack": "Mochila de Hierro Industrial",
+  "item.fxntstorage.back_pack": "Mochila de Hierro Industrial",
+
+  "block.fxntstorage.andesite_back_pack": "Mochila de Andesita",
+  "container.fxntstorage.andesite_back_pack": "Mochila de Andesita",
+  "item.fxntstorage.andesite_back_pack": "Mochila de Andesita",
+
+  "block.fxntstorage.copper_back_pack": "Mochila de Cobre",
+  "container.fxntstorage.copper_back_pack": "Mochila de Cobre",
+  "item.fxntstorage.copper_back_pack": "Mochila de Cobre",
+
+  "block.fxntstorage.brass_back_pack": "Mochila de Latón",
+  "container.fxntstorage.brass_back_pack": "Mochila de Latón",
+  "item.fxntstorage.brass_back_pack": "Mochila de Latón",
+
+  "block.fxntstorage.hardened_back_pack": "Mochila Endurecida",
+  "container.fxntstorage.hardened_back_pack": "Mochila Endurecida",
+  "item.fxntstorage.hardened_back_pack": "Mochila de Endurecida",
+
+  "item.fxntstorage.back_pack_blank_upgrade": "Plantilla de Mejora",
+  "item.fxntstorage.back_pack_magnet_upgrade": "Mejora de Imán de Mochila",
+  "item.fxntstorage.back_pack_magnet_upgrade_deactivated": "Mejora de Imán de Mochila [Desactivado]",
+  "item.fxntstorage.back_pack_pickblock_upgrade": "Mejora de Colección de Bloques de Mochila",
+  "item.fxntstorage.back_pack_pickblock_upgrade_deactivated": "Mejora de Colección de Bloques de Mochila [Desactivado]",
+  "item.fxntstorage.back_pack_itempickup_upgrade": "Mejora de Colección de Objetos de Mochila",
+  "item.fxntstorage.back_pack_itempickup_upgrade_deactivated": "Mejora de Colección de Objetos de Mochila [Desactivado]",
+  "item.fxntstorage.back_pack_flight_upgrade": "Mejora de Vuelo de Mochila",
+  "item.fxntstorage.back_pack_flight_upgrade_deactivated": "Mejora de Vuelo de Mochila [Desactivado]",
+  "item.fxntstorage.back_pack_refill_upgrade": "Mejora de Rellena de Mochila",
+  "item.fxntstorage.back_pack_refill_upgrade_deactivated": "Mejora de Rellena de Mochila [Desactivado]",
+  "item.fxntstorage.back_pack_feeder_upgrade": "Mejora de Alimentación de Mochila",
+  "item.fxntstorage.back_pack_feeder_upgrade_deactivated": "Mejora de Alimentación de Mochila [Desactivado]",
+  "item.fxntstorage.back_pack_toolswap_upgrade": "Mejora de Conmuta Herramientas de Mochila",
+  "item.fxntstorage.back_pack_toolswap_upgrade_deactivated": "Mejora de Conmuta Herramientas de Mochila [Desactivado]",
+    "item.fxntstorage.back_pack_falldamage_upgrade": "Mejora de Daño por Caída de Mochila",
+  "item.fxntstorage.back_pack_falldamage_upgrade_deactivated": "Mejora de Daño por Caída de Mochila [Desactivado]",
+
+  "item.fxntstorage.storage_box_void_upgrade": "Mejora de Vacío de Caja de Almacienamento Simple",
+  "item.fxntstorage.storage_box_capacity_upgrade": "Mejora de Capacidad de Caja de Almacienamento Simple",
+
+  "block.fxntstorage.storage_trim": "Marco de Almacienamento de Roble",
+  "block.fxntstorage.storage_trim_spruce": "Marco de Almacienamento de Abeto",
+  "block.fxntstorage.storage_trim_birch": "Marco de Almacienamento de Abedul",
+  "block.fxntstorage.storage_trim_jungle": "Marco de Almacienamento de la Jungla",
+  "block.fxntstorage.storage_trim_acacia": "Marco de Almacienamento de Acacia",
+  "block.fxntstorage.storage_trim_dark_oak": "Marco de Almacienamento de Roble Oscuro",
+  "block.fxntstorage.storage_trim_mangrove": "Marco de Almacienamento de Mangle",
+  "block.fxntstorage.storage_trim_cherry": "Marco de Almacienamento de Cerezo",
+  "block.fxntstorage.storage_trim_bamboo": "Marco de Almacienamento de Bambú",
+  "block.fxntstorage.storage_trim_crimson": "Marco de Almacienamento Carmesí",
+  "block.fxntstorage.storage_trim_warped": "Marco de Almacienamento Distorsionado",
+
+  "fxntstorage.tooltip.holdForControls": "Presiona [CTRL] para los Controles",
+  "fxntstorage.tooltip.holdForDescription": "Presiona [Shift] para lo Resumen",
+
+  "fxntstorage.storage_box_void_upgrade_exists": "Esta caja de almacenamiento ya contiene una mejora de vacío",
+  "fxntstorage.storage_box_capacity_upgrade_max": "Esta caja de almacenamiento ha alcanzado su capacidad máxima."
+}
